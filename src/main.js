@@ -387,6 +387,7 @@ function initializeGame() {
     };
   }
 
+  game.scene.start("BootScene");
   console.log("🛰️ Exodus 2045 Coordination System Online");
   console.log("📋 Phase 1: Foundation Systems Active");
   console.log("🎮 Controls: SPACE (pause), 1/2/4 (speed), M (map), R (radio)");

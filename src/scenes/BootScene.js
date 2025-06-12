@@ -10,46 +10,21 @@ export default class BootScene extends Phaser.Scene {
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
     );
 
-    // Loading progress simulation
-    const loadingFill = document.getElementById("loading-fill");
-    let progress = 0;
-
-    const progressInterval = setInterval(() => {
-      progress += Math.random() * 20;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(progressInterval);
-      }
-      if (loadingFill) {
-        loadingFill.style.width = `${progress}%`;
-      }
-    }, 100);
-
     this.load.on("complete", () => {
-      // Hide HTML loading screen
-      setTimeout(() => {
-        const loading = document.getElementById("loading");
-        if (loading) {
-          loading.classList.add("hidden");
-        }
-
-        // Start GameUI first (persistent tab system)
-        this.scene.start("GameUI");
-        // GameUI will handle launching the initial content scene
-        this.scene.launch("CoordinatorTerminal");
-      }, 500);
+      console.log("🚀 Boot assets loaded, starting game systems...");
     });
   }
 
   create() {
-    console.log("🚀 Boot sequence complete");
+    console.log("🚀 Boot sequence starting proper scene initialization");
 
-    // Start GameUI first (for background notifications)
-    this.scene.launch("GameUI");
+    // Start GameUI first (persistent tab system)
+    this.scene.start("GameUI");
 
-    // Small delay, then start the main terminal
-    this.time.delayedCall(200, () => {
-      this.scene.start("CoordinatorTerminal");
+    // Small delay, then launch the initial content scene
+    this.time.delayedCall(300, () => {
+      this.scene.launch("CoordinatorTerminal");
+      console.log("✅ All scenes initialized - game ready");
     });
   }
 }

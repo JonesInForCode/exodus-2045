@@ -135,13 +135,19 @@ export default class CoordinatorTerminal extends Phaser.Scene {
   createTerminalInterface() {
     const { width, height } = this.scale;
 
-    // Main terminal background (leave more space for navigation tabs)
-    this.add.rectangle(0, 105, width, height - 105, 0x0f172a).setOrigin(0, 0);
+    // Terminal starts below the tabs (40px for tab bar)
+    const tabHeight = 40;
+    const terminalStartY = tabHeight;
 
-    // Terminal header
+    // Main terminal background
+    this.add
+      .rectangle(0, terminalStartY, width, height - terminalStartY, 0x0f172a)
+      .setOrigin(0, 0);
+
+    // Terminal header (below tabs)
     const headerHeight = 60;
     const header = this.add
-      .rectangle(0, 0, width, headerHeight, 0x1e293b)
+      .rectangle(0, terminalStartY, width, headerHeight, 0x1e293b)
       .setOrigin(0, 0);
 
     // Header text
@@ -173,7 +179,8 @@ export default class CoordinatorTerminal extends Phaser.Scene {
       .setOrigin(1, 0);
 
     // Store header height for layout calculations (tabs now at 105px)
-    this.headerHeight = 105;
+    // Store header height for layout calculations (tabs + terminal header)
+    this.headerHeight = tabHeight + headerHeight; // 40 + 60 = 100px
   }
   createTimeDisplay() {
     const { width } = this.scale;
