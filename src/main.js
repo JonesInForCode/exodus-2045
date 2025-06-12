@@ -4,14 +4,13 @@ import MapView from "./scenes/MapView.js";
 import GameUI from "./scenes/GameUI.js";
 import BootScene from "./scenes/BootScene.js";
 
-// Game configuration
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
   parent: "phaser-game",
   backgroundColor: "#0f172a",
-  scene: [BootScene, GameUI, CoordinatorTerminal, MapView], // GameUI first so it runs in background
+  scene: [BootScene, GameUI, CoordinatorTerminal, MapView],
   physics: {
     default: "arcade",
     arcade: {
@@ -26,6 +25,12 @@ const config = {
   render: {
     antialias: false,
     pixelArt: true,
+  },
+  callbacks: {
+    postBoot: function (game) {
+      // Ensure GameUI is always running in the background
+      game.scene.run("GameUI");
+    },
   },
 };
 
@@ -387,7 +392,10 @@ function initializeGame() {
     };
   }
 
-  game.scene.start("BootScene");
+  // To this:
+  // Directly start both scenes to avoid any timing issues
+  game.scene.start("GameUI");
+  game.scene.launch("CoordinatorTerminal");
   console.log("🛰️ Exodus 2045 Coordination System Online");
   console.log("📋 Phase 1: Foundation Systems Active");
   console.log("🎮 Controls: SPACE (pause), 1/2/4 (speed), M (map), R (radio)");

@@ -4,7 +4,6 @@ import MessageSystem from "../systems/MessageSystem.js";
 import ResourceManager from "../systems/ResourceManager.js";
 import TimeController from "../systems/TimeController.js";
 import CaravanManager from "../systems/CaravanManager.js";
-import Phaser from "phaser";
 
 export default class CoordinatorTerminal extends Phaser.Scene {
   constructor() {

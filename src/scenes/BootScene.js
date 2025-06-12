@@ -18,14 +18,16 @@ export default class BootScene extends Phaser.Scene {
   create() {
     console.log("🚀 Boot sequence starting proper scene initialization");
 
-    // Start GameUI first (persistent tab system)
-    this.scene.start("GameUI");
+    // Launch GameUI (persistent tab system) - use launch so both scenes run
+    this.scene.launch("GameUI");
+    console.log("✅ GameUI launched");
 
-    // Small delay, then launch the initial content scene
-    this.time.delayedCall(300, () => {
-      // Use 'start' instead of 'launch' for the initial scene
-      this.scene.start("CoordinatorTerminal");
-      console.log("✅ All scenes initialized - game ready");
-    });
+    // Launch the initial content scene
+    this.scene.launch("CoordinatorTerminal");
+    console.log("✅ CoordinatorTerminal launched");
+
+    // Stop the boot scene as it's no longer needed
+    this.scene.stop();
+    console.log("✅ Boot sequence complete");
   }
 }
