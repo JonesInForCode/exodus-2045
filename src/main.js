@@ -2,7 +2,6 @@
 import CoordinatorTerminal from "./scenes/CoordinatorTerminal.js";
 import MapView from "./scenes/MapView.js";
 import GameUI from "./scenes/GameUI.js";
-import TimeController from "./scenes/TimeController.js"
 
 // Game configuration
 const config = {
