@@ -1,30 +1,31 @@
 # 🛰️ Exodus 2045 - Climate Migration Coordination Simulator
 
-**SIMPLE VERSION - NO BUILD TOOLS REQUIRED**
+**MODERN DEVELOPMENT VERSION**
 
 A real-time crisis management simulation where you play as Sarah Martinez, a Level-3 Coordinator guiding climate refugee caravans across a devastated continent.
 
-## 🚀 **Super Quick Start - Just Open and Play!**
+## 🚀 **Quick Start**
 
-### Method 1: Direct File Opening
+### Prerequisites
 
-1. **Download or clone** this repository
-2. **Open `index.html`** in your web browser
-3. **That's it!** The game loads automatically
+- **Node.js** (v16 or higher)
+- **npm** (comes with Node.js)
 
-### Method 2: Local Server (Recommended)
+### Setup & Run
 
 ```bash
-# If you have Python installed:
-python3 -m http.server 8000
+# Clone or download the project
+git clone <your-repo-url>
+cd exodus-2045
 
-# Then open: http://localhost:8000
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-### Method 3: Live Server (VS Code)
-
-1. Install **Live Server** extension in VS Code
-2. Right-click `index.html` → "Open with Live Server"
+The game will automatically open at `http://localhost:3000`
 
 ## 🎮 **Controls**
 
@@ -32,54 +33,61 @@ python3 -m http.server 8000
 - **1, 2, 4** - Time speed (1x, 2x, 4x)
 - **Mouse** - Click buttons and interact with panels
 
-## 📁 **Simple File Structure**
+## 📁 **Project Structure**
 
 ```
 exodus-2045/
-├── index.html              ← Main game file
-├── js/
-│   ├── main.js             ← Game initialization
+├── package.json            ← Dependencies and scripts
+├── vite.config.js          ← Vite configuration
+├── index.html              ← Main HTML entry point
+├── src/
+│   ├── main.js             ← Game initialization & config
 │   └── scenes/
-│       ├── CoordinatorTerminal.js
-│       ├── MapView.js
-│       └── GameUI.js
+│       ├── BootScene.js    ← Loading & initialization
+│       ├── CoordinatorTerminal.js ← Main game interface
+│       ├── GameUI.js       ← Notifications & overlays
+│       └── MapView.js      ← GPS tracking (Phase 2)
+├── assets/                 ← Game assets (future)
 └── README.md
 ```
 
 ## ✅ **What Works Right Now**
 
-- 🛰️ Professional coordinator terminal interface
-- 📊 Resource monitoring panel
-- 📧 Message system with priority indicators
-- 📍 Caravan tracking display
-- ⏱️ Real-time clock with speed controls
-- 🔊 Audio feedback system
-- 🚨 Notification system
+- 🛰️ **Professional coordinator terminal interface**
+- 📊 **Resource monitoring panel** with global resource tracking
+- 📧 **Message system** with priority indicators (high/medium/low)
+- 📍 **Caravan tracking display** with real-time status
+- ⏱️ **Real-time game clock** with speed controls (pause, 1x, 2x, 4x)
+- 🚨 **Notification system** with animated alerts
+- 🎨 **Professional terminal styling** with color-coded interface
+- ⌨️ **Keyboard shortcuts** for time control
+- 📱 **Responsive design** that adapts to window size
 
 ## 🚧 **What's Coming (Phase 2)**
 
-- 🗺️ Interactive GPS map
-- 🚨 Crisis event system
-- 📻 Radio communications
-- 🎯 Resource allocation
-- 👥 Multi-caravan management
+- 🗺️ **Interactive GPS map** with caravan positions
+- 🚨 **Crisis event system** with decision trees
+- 📻 **Radio communications** with audio feedback
+- 🎯 **Resource allocation** with supply drop coordination
+- 👥 **Multi-caravan management** (3-8 caravans simultaneously)
+- 🌪️ **Weather system** with environmental hazards
+- 💾 **Save/load system** with shift progression
 
 ## 🛠️ **Tech Stack**
 
-- **Phaser 3** (loaded from CDN)
-- **Vanilla JavaScript** (ES6 modules)
-- **No build tools** required
-- **No npm dependencies**
-- **Just open and play!**
+- **Phaser 3** - Game engine for graphics and interaction
+- **Vite** - Fast development server and build tool
+- **ES6 Modules** - Modern JavaScript with proper imports/exports
+- **Node.js/npm** - Package management and development tools
 
-## 🎯 **Why This Approach?**
+## 🎯 **Development Features**
 
-- ✅ **No setup complexity** - just open the HTML file
-- ✅ **No npm/Node.js required**
-- ✅ **No build process** to understand or debug
-- ✅ **Fast development** - save and refresh
-- ✅ **Easy deployment** - upload files anywhere
-- ✅ **Works offline** once loaded
+- ✅ **Hot Module Reloading** - Changes appear instantly
+- ✅ **Source Maps** - Easy debugging
+- ✅ **Modern JavaScript** - ES6+ features supported
+- ✅ **Proper Scene Management** - Phaser best practices
+- ✅ **Event-Driven Architecture** - Clean communication between systems
+- ✅ **Centralized State Management** - Global game state registry
 
 ## 🌐 **Browser Support**
 
@@ -89,35 +97,102 @@ Works on any modern browser:
 - Firefox 88+
 - Safari 14+
 
-## 🎨 **Visual Style**
+## 🎨 **Visual Design**
 
-- Professional emergency management interface
-- Green terminal text on dark background
-- Color-coded priority system (Red/Yellow/Green)
-- Monospace font for authentic feel
+- **Professional emergency management interface**
+- **Terminal-style UI** with green-on-black color scheme
+- **Color-coded priority system** (Red/Yellow/Green)
+- **Monospace fonts** for authentic technical feel
+- **Animated loading sequences** and smooth transitions
+- **Responsive panels** that adapt to screen size
 
-## 📚 **Development Notes**
+## 📚 **Development Workflow**
 
-This is a **vanilla JavaScript** game using Phaser 3. No complicated build tools, just clean ES6 modules that work directly in the browser.
+### Development Commands
 
-To add features:
+```bash
+npm run dev      # Start development server with hot reload
+npm run build    # Build for production
+npm run preview  # Preview production build locally
+```
 
-1. Edit the `.js` files
-2. Refresh the browser
-3. See changes immediately
+### Adding New Features
+
+1. **Scenes** - Add new scenes in `src/scenes/`
+2. **Systems** - Add game systems in `src/systems/` (future)
+3. **Data** - Add game data in `src/data/` (future)
+4. **Assets** - Add images/audio in `assets/`
+
+### Code Structure
+
+- **Clean ES6 modules** with proper imports/exports
+- **Scene-based architecture** following Phaser conventions
+- **Event-driven communication** between game systems
+- **Centralized state management** via Phaser registry
 
 ## 🚀 **Deployment**
 
-To deploy anywhere:
+### Build for Production
 
-1. Upload all files to any web hosting
-2. Point visitors to `index.html`
-3. Works on GitHub Pages, Netlify, or any static host
+```bash
+npm run build
+```
+
+Deploy the `dist/` folder to any static hosting:
+
+- **Netlify** - Drag and drop `dist/` folder
+- **Vercel** - Connect GitHub repo for auto-deployment
+- **GitHub Pages** - Upload `dist/` contents
+- **Any web server** - Static file hosting
+
+## 🐛 **Troubleshooting**
+
+### Common Issues
+
+**Game doesn't load:**
+
+- Check browser console (F12) for errors
+- Ensure Node.js v16+ is installed
+- Run `npm install` to install dependencies
+
+**Development server won't start:**
+
+```bash
+# Clear npm cache and reinstall
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Port already in use:**
+
+```bash
+# Use different port
+npm run dev -- --port 3001
+```
+
+## 🎮 **Game Features**
+
+### Current Gameplay
+
+- **Monitor global resources** (supply drops, drones, fuel depots, medical teams)
+- **Track caravan status** (Alpha-7 with leader Maria Santos)
+- **Manage communications** with priority-coded messages
+- **Control game time** with realistic time progression
+- **Professional coordinator experience** with authentic interface
+
+### Phase 2 Goals
+
+- **Multi-caravan coordination** with complex decision trees
+- **Resource allocation puzzles** with supply/demand balancing
+- **Crisis management scenarios** with time pressure
+- **Relationship building** with caravan leaders
+- **Strategic route planning** with hazard avoidance
 
 ---
 
 **🛰️ "In 2045, you don't just play a game. You coordinate survival." 🛰️**
 
-### Quick Test:
+### Current Status: ✅ **Phase 1 Complete - Foundation Ready**
 
-Open `index.html` in your browser right now - the Exodus Coordination System should boot up immediately!
+The coordinator terminal is fully operational and ready for Phase 2 feature development!
