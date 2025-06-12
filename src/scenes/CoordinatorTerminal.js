@@ -135,8 +135,8 @@ export default class CoordinatorTerminal extends Phaser.Scene {
   createTerminalInterface() {
     const { width, height } = this.scale;
 
-    // Main terminal background
-    this.add.rectangle(0, 0, width, height, 0x0f172a).setOrigin(0, 0);
+    // Main terminal background (leave space for navigation tabs)
+    this.add.rectangle(0, 110, width, height - 110, 0x0f172a).setOrigin(0, 0);
 
     // Terminal header
     const headerHeight = 60;
