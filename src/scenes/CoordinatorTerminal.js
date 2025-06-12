@@ -40,29 +40,49 @@ export default class CoordinatorTerminal extends Phaser.Scene {
   }
 
   async create() {
+    console.log("CoordinatorTerminal: create() start");
     console.log("🖥️ Initializing Coordinator Terminal...");
 
     // Initialize systems
+    try {
     await this.initializeSystems();
+    console.log("CoordinatorTerminal: initializeSystems finished");
+  } catch (e) {
+    console.error("CoordinatorTerminal: initializeSystems ERROR", e);
+  }
 
     // Create UI
     this.createTerminalInterface();
+    console.log("CoordinatorTerminal: createTerminalInterface finished");
     this.createTimeDisplay();
+    console.log("CoordinatorTerminal: createTerminalDisplay finished");
     this.createResourcePanel();
+    console.log("CoordinatorTerminal: createResourcePanel finished");
     this.createMessagePanel();
+    console.log("CoordinatorTerminal: createMessagePanel finished");
     this.createCaravanPanel();
+    console.log("CoordinatorTerminal: createCaravanPanel finished");
     this.createControlPanel();
+    console.log("CoordinatorTerminal: createControlPanel finished");
 
     // Start all systems
     this.startSystems();
+    console.log("CoordinatorTerminal: startSystems finished");
 
     console.log("🖥️ Coordinator Terminal Online");
+
+    console.log("CoordinatorTerminal: create() end");
   }
 
   async initializeSystems() {
     // Initialize data manager first
     this.dataManager = new DataManager();
+    try {
     await this.dataManager.loadAllData();
+    console.log("CoordinatorTerminal: Data loaded");
+  } catch (e) {
+    console.error("CoordinatorTerminal: Data load ERROR", e);
+  }
 
     // Initialize other systems with data manager
     this.timeController = new TimeController(this);

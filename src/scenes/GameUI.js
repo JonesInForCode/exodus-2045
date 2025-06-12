@@ -9,6 +9,8 @@ export default class GameUI extends Phaser.Scene {
     this.setupEventListeners();
 
     console.log("🖥️ Game UI initialized");
+    this.scene.start('CoordinatorTerminal');
+    this.scene.launch('CoordinatorTerminal');
   }
 
   createNotificationSystem() {

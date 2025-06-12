@@ -45,13 +45,17 @@ function simulateLoading() {
   let stepIndex = 0;
 
   const interval = setInterval(() => {
+    console.log("simulateLoading: started");
     if (stepIndex >= loadingSteps.length) {
       clearInterval(interval);
 
       // Hide loading screen and start game
       setTimeout(() => {
+        console.log("simulateLoading: hiding loading, calling initializeGame");
         loadingElement.classList.add("hidden");
+        console.log("initializing game...")
         initializeGame();
+        console.log("Game initialized...")
       }, 500);
       return;
     }
@@ -74,6 +78,7 @@ function simulateLoading() {
 
 // Initialize Phaser game with enhanced state management
 function initializeGame() {
+  console.log("inside initializeGame function");
   const game = new Phaser.Game(config);
 
   // Enhanced global game state
