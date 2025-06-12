@@ -1,26 +1,18 @@
 {
   "name": "exodus-2045",
   "version": "1.0.0",
-  "description": "**SIMPLE VERSION - NO BUILD TOOLS REQUIRED**",
-  "main": "index.js",
+  "description": "Climate Migration Coordination Simulator",
+  "main": "src/main.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JonesInForCode/exodus-2045.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JonesInForCode/exodus-2045/issues"
-  },
-  "homepage": "https://github.com/JonesInForCode/exodus-2045#readme",
   "dependencies": {
-    "phaser": "^3.90.0"
+    "phaser": "^3.70.0"
   },
   "devDependencies": {
-    "vite": "^5.4.19"
+    "vite": "^5.0.0"
   }
 }
