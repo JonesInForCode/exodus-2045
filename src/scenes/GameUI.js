@@ -30,11 +30,11 @@ export default class GameUI extends Phaser.Scene {
       { key: "caravan", label: "🚐 CARAVAN DETAILS", scene: "CaravanDetails" },
     ];
 
-    // Create tab system using utility
-    this.tabSystem = LayoutUtils.createTabSystem(this, 20, 60, tabs, {
-      tabWidth: 200,
-      tabHeight: 40,
-      gap: 10,
+    // Create tab system using utility (moved down and right)
+    this.tabSystem = LayoutUtils.createTabSystem(this, 100, 75, tabs, {
+      tabWidth: 180, // Slightly smaller to fit better
+      tabHeight: 35, // Slightly smaller height
+      gap: 8,
       onTabChange: (tab, index) => this.switchToTab(tab.key, tab.scene),
     });
 
