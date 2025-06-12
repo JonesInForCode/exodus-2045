@@ -258,6 +258,7 @@ Climate change has made large portions of North America uninhabitable. Mass migr
 7. **Emotional Investment** - Personal relationships with caravan leaders
 8. **Crisis Management Simulation** - Realistic emergency response scenarios
 9. **Shift Dynamics** - Unique gameplay around mandatory rest periods and workplace relationships
+10. **Simulated Persistence** - Saving and Quiting the game transitions time by 12 hours to simulate another Coordinator taking over while you're away
 
 ---
 
