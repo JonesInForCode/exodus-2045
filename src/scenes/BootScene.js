@@ -33,9 +33,10 @@ export default class BootScene extends Phaser.Scene {
           loading.classList.add("hidden");
         }
 
-        // Start main game
-        this.scene.start("CoordinatorTerminal");
-        this.scene.launch("GameUI");
+        // Start GameUI first (persistent tab system)
+        this.scene.start("GameUI");
+        // GameUI will handle launching the initial content scene
+        this.scene.launch("CoordinatorTerminal");
       }, 500);
     });
   }

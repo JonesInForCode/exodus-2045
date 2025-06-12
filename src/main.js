@@ -292,8 +292,8 @@ function initializeGame() {
 
       case "KeyM":
         event.preventDefault();
-        // Toggle to map view (when implemented)
-        console.log("🗺️ Map view toggle requested (Phase 2 feature)");
+        // Map toggle is now handled by GameUI tab system
+        game.events.emit("switchToTab", "map");
         break;
 
       case "KeyR":

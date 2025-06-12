@@ -397,11 +397,6 @@ export default class MapView extends Phaser.Scene {
     this.createMapButton(340, buttonY, "🔄 REFRESH", () =>
       this.refreshCaravans()
     );
-
-    // Return to terminal button
-    this.createMapButton(width - 150, buttonY, "🖥️ TERMINAL", () => {
-      this.scene.start("CoordinatorTerminal");
-    });
   }
 
   createMapButton(x, y, text, callback) {
