@@ -4,7 +4,7 @@ import MessageSystem from "../systems/MessageSystem.js";
 import ResourceManager from "../systems/ResourceManager.js";
 import TimeController from "../systems/TimeController.js";
 import CaravanManager from "../systems/CaravanManager.js";
-import Phaser from "phaser"
+import Phaser from "phaser";
 
 export default class CoordinatorTerminal extends Phaser.Scene {
   constructor() {
@@ -45,11 +45,11 @@ export default class CoordinatorTerminal extends Phaser.Scene {
 
     // Initialize systems
     try {
-    await this.initializeSystems();
-    console.log("CoordinatorTerminal: initializeSystems finished");
-  } catch (e) {
-    console.error("CoordinatorTerminal: initializeSystems ERROR", e);
-  }
+      await this.initializeSystems();
+      console.log("CoordinatorTerminal: initializeSystems finished");
+    } catch (e) {
+      console.error("CoordinatorTerminal: initializeSystems ERROR", e);
+    }
 
     // Create UI
     this.createTerminalInterface();
@@ -69,6 +69,9 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     this.startSystems();
     console.log("CoordinatorTerminal: startSystems finished");
 
+    // fade in effect
+    this.cameras.main.fadeIn(500, 15, 23, 42);
+
     console.log("🖥️ Coordinator Terminal Online");
 
     console.log("CoordinatorTerminal: create() end");
@@ -78,11 +81,11 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     // Initialize data manager first
     this.dataManager = new DataManager();
     try {
-    await this.dataManager.loadAllData();
-    console.log("CoordinatorTerminal: Data loaded");
-  } catch (e) {
-    console.error("CoordinatorTerminal: Data load ERROR", e);
-  }
+      await this.dataManager.loadAllData();
+      console.log("CoordinatorTerminal: Data loaded");
+    } catch (e) {
+      console.error("CoordinatorTerminal: Data load ERROR", e);
+    }
 
     // Initialize other systems with data manager
     this.timeController = new TimeController(this);

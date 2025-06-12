@@ -42,5 +42,13 @@ export default class BootScene extends Phaser.Scene {
 
   create() {
     console.log("🚀 Boot sequence complete");
+
+    // Start GameUI first (for background notifications)
+    this.scene.launch("GameUI");
+
+    // Small delay, then start the main terminal
+    this.time.delayedCall(200, () => {
+      this.scene.start("CoordinatorTerminal");
+    });
   }
 }

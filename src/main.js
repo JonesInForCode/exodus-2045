@@ -2,6 +2,7 @@
 import CoordinatorTerminal from "./scenes/CoordinatorTerminal.js";
 import MapView from "./scenes/MapView.js";
 import GameUI from "./scenes/GameUI.js";
+import BootScene from "./scenes/BootScene.js";
 
 // Game configuration
 const config = {
@@ -10,7 +11,7 @@ const config = {
   height: window.innerHeight,
   parent: "phaser-game",
   backgroundColor: "#0f172a",
-  scene: [GameUI, CoordinatorTerminal, MapView], // GameUI first so it runs in background
+  scene: [BootScene, GameUI, CoordinatorTerminal, MapView], // GameUI first so it runs in background
   physics: {
     default: "arcade",
     arcade: {
@@ -51,12 +52,14 @@ function simulateLoading() {
 
       // Hide loading screen and start game
       setTimeout(() => {
-        console.log("simulateLoading: hiding loading, calling initializeGame");
-        loadingElement.classList.add("hidden");
-        console.log("initializing game...")
-        initializeGame();
-        console.log("Game initialized...")
-      }, 500);
+        loadingElement.style.transition = "opacity 0.5s ease-out";
+        loadingElement.style.opacity = "0";
+
+        setTimeout(() => {
+          loadingElement.classList.add("hidden");
+          initializeGame();
+        }, 500);
+      }, 300);
       return;
     }
 
