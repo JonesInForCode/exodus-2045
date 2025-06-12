@@ -1,0 +1,163 @@
+{
+  "routes": [
+    {
+      "id": "phoenix_to_new_seattle",
+      "name": "Phoenix to New Seattle Route",
+      "waypoints": [
+        {
+          "id": "phoenix_start",
+          "name": "Phoenix Ruins",
+          "lat": 33.4484,
+          "lng": -112.074,
+          "type": "start",
+          "status": "passed",
+          "icon": "🏚️",
+          "description": "Former metropolitan area, now mostly abandoned"
+        },
+        {
+          "id": "scottsdale_outpost",
+          "name": "Scottsdale Outpost",
+          "lat": 33.4942,
+          "lng": -111.9261,
+          "type": "checkpoint",
+          "status": "current",
+          "icon": "🏕️",
+          "description": "Small survivor settlement with basic supplies"
+        },
+        {
+          "id": "flagstaff_station",
+          "name": "Flagstaff Station",
+          "lat": 35.1983,
+          "lng": -111.6513,
+          "type": "fuel_station",
+          "status": "ahead",
+          "icon": "⛽",
+          "description": "Solar charging station with mechanical workshop"
+        },
+        {
+          "id": "dust_storm_zone",
+          "name": "Dust Storm Zone",
+          "lat": 36.0544,
+          "lng": -112.1401,
+          "type": "hazard",
+          "status": "ahead",
+          "icon": "🌪️",
+          "description": "Frequent dust storms, low visibility area"
+        },
+        {
+          "id": "utah_checkpoint",
+          "name": "Utah Border Checkpoint",
+          "lat": 37.0042,
+          "lng": -109.0489,
+          "type": "checkpoint",
+          "status": "ahead",
+          "icon": "🚧",
+          "description": "Official checkpoint with security screening"
+        },
+        {
+          "id": "salt_lake_ruins",
+          "name": "Salt Lake Ruins",
+          "lat": 40.7608,
+          "lng": -111.891,
+          "type": "danger_zone",
+          "status": "ahead",
+          "icon": "💀",
+          "description": "Heavily contaminated area, avoid if possible"
+        },
+        {
+          "id": "idaho_trading_post",
+          "name": "Idaho Trading Post",
+          "lat": 43.615,
+          "lng": -116.2023,
+          "type": "supply_depot",
+          "status": "ahead",
+          "icon": "🏪",
+          "description": "Major supply depot with medical facilities"
+        },
+        {
+          "id": "new_seattle_zone",
+          "name": "New Seattle Climate Zone",
+          "lat": 47.6062,
+          "lng": -122.3321,
+          "type": "destination",
+          "status": "destination",
+          "icon": "🏛️",
+          "description": "Climate-controlled safe zone with permanent settlement"
+        }
+      ],
+      "distance_km": 1847,
+      "estimated_days": 12,
+      "difficulty": "moderate",
+      "hazards": ["dust_storms", "extreme_heat", "raiders", "contamination"]
+    },
+    {
+      "id": "alternative_mountain_route",
+      "name": "Mountain Alternative Route",
+      "waypoints": [
+        {
+          "id": "phoenix_start",
+          "name": "Phoenix Ruins",
+          "lat": 33.4484,
+          "lng": -112.074,
+          "type": "start",
+          "status": "passed",
+          "icon": "🏚️"
+        },
+        {
+          "id": "prescott_shelter",
+          "name": "Prescott Shelter",
+          "lat": 34.54,
+          "lng": -112.4685,
+          "type": "shelter",
+          "status": "ahead",
+          "icon": "🏠"
+        },
+        {
+          "id": "grand_canyon_detour",
+          "name": "Grand Canyon Detour",
+          "lat": 36.1069,
+          "lng": -112.1129,
+          "type": "scenic_route",
+          "status": "ahead",
+          "icon": "🏔️"
+        }
+      ],
+      "distance_km": 2156,
+      "estimated_days": 16,
+      "difficulty": "hard",
+      "hazards": ["altitude", "cold_nights", "steep_terrain"]
+    }
+  ],
+  "supply_drops": [
+    {
+      "id": "echo_3",
+      "name": "Supply Drop Echo-3",
+      "lat": 34.7465,
+      "lng": -112.5057,
+      "type": "medical",
+      "radius_km": 50,
+      "available": true,
+      "contents": ["medicine", "water_purification", "antibiotics"]
+    },
+    {
+      "id": "delta_7",
+      "name": "Fuel Depot Delta-7",
+      "lat": 35.687,
+      "lng": -111.3901,
+      "type": "fuel",
+      "radius_km": 75,
+      "available": true,
+      "contents": ["solar_batteries", "charging_equipment", "vehicle_parts"]
+    },
+    {
+      "id": "charlie_2",
+      "name": "Water Station Charlie-2",
+      "lat": 36.9719,
+      "lng": -111.0937,
+      "type": "water",
+      "radius_km": 40,
+      "available": true,
+      "contents": ["purified_water", "filtration_systems"]
+    }
+  ]
+}
