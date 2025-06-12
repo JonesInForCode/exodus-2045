@@ -213,16 +213,13 @@ export default class GameUI extends Phaser.Scene {
 
       if (isDisabled) {
         button.background.setFillStyle(0x374151);
-        button.text.setColor("#6b7280");
-        button.text.setFontWeight("normal");
+        button.text.setStyle({ color: "#6b7280", fontWeight: "normal" });
       } else if (isActive) {
         button.background.setFillStyle(0x10b981);
-        button.text.setColor("#0f172a");
-        button.text.setFontWeight("bold");
+        button.text.setStyle({ color: "#0f172a", fontWeight: "bold" });
       } else {
         button.background.setFillStyle(0x475569);
-        button.text.setColor("#e2e8f0");
-        button.text.setFontWeight("normal");
+        button.text.setStyle({ color: "#e2e8f0", fontWeight: "normal" });
       }
     });
   }
