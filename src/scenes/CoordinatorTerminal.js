@@ -150,8 +150,8 @@ export default class CoordinatorTerminal extends Phaser.Scene {
       .rectangle(0, terminalStartY, width, headerHeight, 0x1e293b)
       .setOrigin(0, 0);
 
-    // Header text
-    this.add.text(20, 15, "🛰️ EXODUS COORDINATION CENTER", {
+    // Header text (positioned relative to terminal start)
+    this.add.text(20, terminalStartY + 15, "🛰️ EXODUS COORDINATION CENTER", {
       fontFamily: "Courier New",
       fontSize: "18px",
       color: "#10b981",
@@ -160,7 +160,7 @@ export default class CoordinatorTerminal extends Phaser.Scene {
 
     this.add.text(
       20,
-      35,
+      terminalStartY + 35,
       "Operator: Sarah Martinez | Shift: Day-7 | Clearance: Level-3",
       {
         fontFamily: "Courier New",
@@ -171,7 +171,7 @@ export default class CoordinatorTerminal extends Phaser.Scene {
 
     // System status indicator
     this.systemStatus = this.add
-      .text(width - 20, 20, "🟢 ALL SYSTEMS OPERATIONAL", {
+      .text(width - 20, terminalStartY + 20, "🟢 ALL SYSTEMS OPERATIONAL", {
         fontFamily: "Courier New",
         fontSize: "12px",
         color: "#10b981",
@@ -184,10 +184,11 @@ export default class CoordinatorTerminal extends Phaser.Scene {
   }
   createTimeDisplay() {
     const { width } = this.scale;
+    const tabHeight = 40;
 
-    // Current time display
+    // Current time display (positioned relative to terminal header)
     this.timeDisplay = this.add
-      .text(width - 20, 40, "00:00:00", {
+      .text(width - 20, tabHeight + 40, "00:00:00", {
         fontFamily: "Courier New",
         fontSize: "24px",
         color: "#f59e0b",
