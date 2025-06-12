@@ -1,0 +1,119 @@
+{
+  "caravans": [
+    {
+      "id": "Alpha-7",
+      "leader": "Maria Santos",
+      "members": 12,
+      "vehicles": 3,
+      "location": {
+        "current": "Phoenix Outskirts",
+        "lat": 33.4484,
+        "lng": -112.074
+      },
+      "destination": "New Seattle Climate Zone",
+      "resources": {
+        "food": 75,
+        "water": 60,
+        "fuel": 45,
+        "medicine": 30,
+        "morale": 85
+      },
+      "status": "moving",
+      "lastContact": "14:23",
+      "specialties": ["medical", "mechanical"],
+      "notes": "Experienced group with medical personnel"
+    },
+    {
+      "id": "Bravo-3",
+      "leader": "James Chen",
+      "members": 8,
+      "vehicles": 2,
+      "location": {
+        "current": "Flagstaff Station",
+        "lat": 35.1983,
+        "lng": -111.6513
+      },
+      "destination": "Great Lakes Collective",
+      "resources": {
+        "food": 55,
+        "water": 90,
+        "fuel": 80,
+        "medicine": 45,
+        "morale": 70
+      },
+      "status": "resting",
+      "lastContact": "13:50",
+      "specialties": ["scouting", "communications"],
+      "notes": "Good at finding safe routes"
+    },
+    {
+      "id": "Charlie-5",
+      "leader": "Elena Rodriguez",
+      "members": 15,
+      "vehicles": 4,
+      "location": {
+        "current": "Tucson Checkpoint",
+        "lat": 32.2226,
+        "lng": -110.9747
+      },
+      "destination": "New Seattle Climate Zone",
+      "resources": {
+        "food": 40,
+        "water": 35,
+        "fuel": 25,
+        "medicine": 70,
+        "morale": 60
+      },
+      "status": "moving",
+      "lastContact": "12:15",
+      "specialties": ["family_group", "agriculture"],
+      "notes": "Large family group with children"
+    },
+    {
+      "id": "Delta-9",
+      "leader": "Ahmad Hassan",
+      "members": 10,
+      "vehicles": 3,
+      "location": {
+        "current": "Albuquerque Ruins",
+        "lat": 35.0844,
+        "lng": -106.6504
+      },
+      "destination": "Mountain Fortress Cities",
+      "resources": {
+        "food": 65,
+        "water": 70,
+        "fuel": 55,
+        "medicine": 40,
+        "morale": 75
+      },
+      "status": "moving",
+      "lastContact": "14:01",
+      "specialties": ["electronics", "solar_tech"],
+      "notes": "Tech specialists with solar equipment"
+    },
+    {
+      "id": "Echo-2",
+      "leader": "Sarah Kim",
+      "members": 6,
+      "vehicles": 2,
+      "location": {
+        "current": "Las Vegas Ruins",
+        "lat": 36.1699,
+        "lng": -115.1398
+      },
+      "destination": "Canadian Border Sanctuaries",
+      "resources": {
+        "food": 80,
+        "water": 45,
+        "fuel": 70,
+        "medicine": 85,
+        "morale": 90
+      },
+      "status": "moving",
+      "lastContact": "13:35",
+      "specialties": ["medical", "research"],
+      "notes": "Former medical research team"
+    }
+  ]
+}

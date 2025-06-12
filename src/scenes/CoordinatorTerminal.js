@@ -1,43 +1,126 @@
+// Updated CoordinatorTerminal.js - Now uses the new systems
+import DataManager from "../systems/DataManager.js";
+import MessageSystem from "../systems/MessageSystem.js";
+import ResourceManager from "../systems/ResourceManager.js";
+import TimeController from "./TimeController.js";
+import CaravanManager from "../systems/CaravanManager.js";
+
 export default class CoordinatorTerminal extends Phaser.Scene {
   constructor() {
     super({ key: "CoordinatorTerminal" });
-    this.currentTime = new Date();
-    this.timeInterval = null;
+
+    // UI containers
+    this.terminalElements = {};
+    this.messageContainer = null;
+    this.caravanContainer = null;
+    this.resourceContainer = null;
+
+    // System managers
+    this.dataManager = null;
+    this.messageSystem = null;
+    this.resourceManager = null;
+    this.timeController = null;
+    this.caravanManager = null;
+
+    // UI state
+    this.currentMessages = [];
+    this.currentCaravans = [];
+    this.timeDisplay = null;
+    this.speedIndicator = null;
+    this.timeControlButtons = [];
   }
 
-  create() {
-    this.createInterface();
-    this.setupEventListeners();
-    this.startClock();
-    this.loadInitialData();
+  preload() {
+    // Create simple colored rectangles for UI elements
+    this.load.image(
+      "pixel",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+    );
+  }
+
+  async create() {
+    console.log("🖥️ Initializing Coordinator Terminal...");
+
+    // Initialize systems
+    await this.initializeSystems();
+
+    // Create UI
+    this.createTerminalInterface();
+    this.createTimeDisplay();
+    this.createResourcePanel();
+    this.createMessagePanel();
+    this.createCaravanPanel();
+    this.createControlPanel();
+
+    // Start all systems
+    this.startSystems();
 
     console.log("🖥️ Coordinator Terminal Online");
   }
 
-  createInterface() {
-    const { width, height } = this.scale;
+  async initializeSystems() {
+    // Initialize data manager first
+    this.dataManager = new DataManager();
+    await this.dataManager.loadAllData();
 
-    // Main background
-    this.add.rectangle(0, 0, width, height, 0x0f172a).setOrigin(0, 0);
+    // Initialize other systems with data manager
+    this.timeController = new TimeController(this);
+    this.messageSystem = new MessageSystem(this, this.dataManager);
+    this.resourceManager = new ResourceManager(this, this.dataManager);
+    this.caravanManager = new CaravanManager(
+      this,
+      this.dataManager,
+      this.messageSystem,
+      this.timeController
+    );
 
-    // Header
-    this.createHeader();
-
-    // Main panels
-    this.createResourcePanel();
-    this.createMessagesPanel();
-    this.createCaravanPanel();
-    this.createControlPanel();
+    console.log("🔧 All systems initialized");
   }
 
-  createHeader() {
-    const { width } = this.scale;
+  startSystems() {
+    // Initialize time controller
+    this.timeController.initialize();
+
+    // Initialize message system
+    this.messageSystem.initialize(this.messageContainer, (messages) => {
+      this.currentMessages = messages;
+      this.displayMessages(messages);
+    });
+
+    // Initialize resource manager
+    this.resourceManager.initialize((resources) => {
+      this.displayResources(resources);
+    });
+
+    // Initialize caravan manager
+    this.caravanManager.initialize();
+
+    // Register for time updates
+    this.timeController.registerCallback((gameTime, timeSpeed, isPaused) => {
+      this.updateTimeDisplay(gameTime);
+      this.updateCaravanDisplay();
+    });
+
+    // Initial display updates
+    this.displayResources(this.resourceManager.getGlobalResources());
+    this.displayCaravans(this.dataManager.getAllCaravans());
+
+    console.log("▶️ All systems started");
+  }
+
+  createTerminalInterface() {
+    const { width, height } = this.scale;
+
+    // Main terminal background
+    this.add.rectangle(0, 0, width, height, 0x0f172a).setOrigin(0, 0);
+
+    // Terminal header
     const headerHeight = 60;
+    const header = this.add
+      .rectangle(0, 0, width, headerHeight, 0x1e293b)
+      .setOrigin(0, 0);
 
-    // Header background
-    this.add.rectangle(0, 0, width, headerHeight, 0x1e293b).setOrigin(0, 0);
-
-    // Title
+    // Header text
     this.add.text(20, 15, "🛰️ EXODUS COORDINATION CENTER", {
       fontFamily: "Courier New",
       fontSize: "18px",
@@ -45,7 +128,6 @@ export default class CoordinatorTerminal extends Phaser.Scene {
       fontWeight: "bold",
     });
 
-    // Operator info
     this.add.text(
       20,
       35,
@@ -57,8 +139,8 @@ export default class CoordinatorTerminal extends Phaser.Scene {
       }
     );
 
-    // System status
-    this.add
+    // System status indicator
+    this.systemStatus = this.add
       .text(width - 20, 20, "🟢 ALL SYSTEMS OPERATIONAL", {
         fontFamily: "Courier New",
         fontSize: "12px",
@@ -66,93 +148,117 @@ export default class CoordinatorTerminal extends Phaser.Scene {
       })
       .setOrigin(1, 0);
 
-    // Time display
+    // Store header height for layout calculations
+    this.headerHeight = headerHeight;
+  }
+
+  createTimeDisplay() {
+    const { width } = this.scale;
+
+    // Current time display
     this.timeDisplay = this.add
-      .text(width - 20, 40, this.formatTime(this.currentTime), {
+      .text(width - 20, 40, "00:00:00", {
         fontFamily: "Courier New",
         fontSize: "24px",
         color: "#f59e0b",
         fontWeight: "bold",
       })
       .setOrigin(1, 0);
-
-    this.headerHeight = headerHeight;
   }
 
   createResourcePanel() {
-    const panel = this.createPanel(20, 80, 250, 200, "GLOBAL RESOURCES");
+    const panelX = 20;
+    const panelY = this.headerHeight + 20;
+    const panelWidth = 250;
+    const panelHeight = 200;
 
-    const resources = [
-      { label: "Supply Drops Available", value: 5, color: "#10b981" },
-      { label: "Active Drones", value: 3, color: "#06b6d4" },
-      { label: "Fuel Depots Online", value: 8, color: "#f59e0b" },
-      { label: "Medical Teams", value: 2, color: "#ef4444" },
-    ];
+    // Panel background
+    this.add
+      .rectangle(panelX, panelY, panelWidth, panelHeight, 0x1e293b)
+      .setOrigin(0, 0)
+      .setStrokeStyle(1, 0x334155);
 
-    resources.forEach((resource, index) => {
-      const y = 110 + index * 30;
-
-      this.add.text(35, y, resource.label, {
-        fontFamily: "Courier New",
-        fontSize: "10px",
-        color: "#cbd5e1",
-      });
-
-      this.add
-        .text(250, y, resource.value.toString(), {
-          fontFamily: "Courier New",
-          fontSize: "14px",
-          color: resource.color,
-          fontWeight: "bold",
-        })
-        .setOrigin(1, 0);
+    // Panel header
+    this.add.text(panelX + 10, panelY + 10, "GLOBAL RESOURCES", {
+      fontFamily: "Courier New",
+      fontSize: "12px",
+      color: "#f59e0b",
+      fontWeight: "bold",
     });
+
+    // Create resource container for dynamic updates
+    this.resourceContainer = this.add.container(panelX + 10, panelY + 35);
   }
 
-  createMessagesPanel() {
+  createMessagePanel() {
     const { width } = this.scale;
-    const panel = this.createPanel(
-      290,
-      80,
-      width - 560,
-      300,
-      "📧 INCOMING COMMUNICATIONS"
-    );
+    const panelX = 290;
+    const panelY = this.headerHeight + 20;
+    const panelWidth = width - 560;
+    const panelHeight = 300;
 
-    this.messageContainer = this.add.container(300, 110);
+    // Panel background
+    this.add
+      .rectangle(panelX, panelY, panelWidth, panelHeight, 0x1e293b)
+      .setOrigin(0, 0)
+      .setStrokeStyle(1, 0x334155);
+
+    // Panel header
+    this.add.text(panelX + 10, panelY + 10, "📧 INCOMING COMMUNICATIONS", {
+      fontFamily: "Courier New",
+      fontSize: "12px",
+      color: "#f59e0b",
+      fontWeight: "bold",
+    });
+
+    // Message list area
+    this.messageContainer = this.add.container(panelX + 10, panelY + 35);
   }
 
   createCaravanPanel() {
     const { width } = this.scale;
-    const panel = this.createPanel(
-      width - 250,
-      80,
-      230,
-      400,
-      "📍 CARAVAN TRACKING"
-    );
+    const panelX = width - 250;
+    const panelY = this.headerHeight + 20;
+    const panelWidth = 230;
+    const panelHeight = 400;
 
-    this.caravanContainer = this.add.container(width - 240, 110);
+    // Panel background
+    this.add
+      .rectangle(panelX, panelY, panelWidth, panelHeight, 0x1e293b)
+      .setOrigin(0, 0)
+      .setStrokeStyle(1, 0x334155);
+
+    // Panel header
+    this.add.text(panelX + 10, panelY + 10, "📍 CARAVAN TRACKING", {
+      fontFamily: "Courier New",
+      fontSize: "12px",
+      color: "#f59e0b",
+      fontWeight: "bold",
+    });
+
+    // Caravan list container
+    this.caravanContainer = this.add.container(panelX + 10, panelY + 35);
   }
 
   createControlPanel() {
     const { width, height } = this.scale;
-    const panelY = height - 80;
+    const panelHeight = 80;
+    const panelY = height - panelHeight;
 
-    // Control panel background
-    this.add.rectangle(0, panelY, width, 80, 0x334155).setOrigin(0, 0);
+    // Panel background
+    this.add.rectangle(0, panelY, width, panelHeight, 0x334155).setOrigin(0, 0);
 
-    // Time controls
-    const controls = [
+    // Time control buttons
+    const timeControls = [
       { text: "⏸️ PAUSE", speed: 0, x: 50 },
       { text: "▶️ 1X", speed: 1, x: 150 },
       { text: "⏩ 2X", speed: 2, x: 230 },
       { text: "⏩⏩ 4X", speed: 4, x: 310 },
     ];
 
-    this.timeButtons = [];
+    this.timeControlButtons = [];
 
-    controls.forEach((control) => {
+    timeControls.forEach((control) => {
       const button = this.createButton(
         control.x,
         panelY + 20,
@@ -161,41 +267,28 @@ export default class CoordinatorTerminal extends Phaser.Scene {
           this.setTimeSpeed(control.speed);
         }
       );
-      this.timeButtons.push({ button, speed: control.speed });
+      this.timeControlButtons.push({ button, speed: control.speed });
     });
 
-    // Speed indicator
+    // Current speed indicator
     this.speedIndicator = this.add.text(400, panelY + 30, "Speed: 1X", {
       fontFamily: "Courier New",
       fontSize: "14px",
       color: "#10b981",
     });
 
-    // Other controls
-    this.createButton(width - 200, panelY + 20, "📻 OPEN RADIO", () => {
-      this.game.events.emit("showNotification", {
-        message: "📻 Radio system - Phase 2 feature",
-        type: "info",
-      });
-    });
-  }
-
-  createPanel(x, y, width, height, title) {
-    // Panel background
-    const panel = this.add
-      .rectangle(x, y, width, height, 0x1e293b)
-      .setOrigin(0, 0)
-      .setStrokeStyle(1, 0x334155);
-
-    // Panel title
-    this.add.text(x + 10, y + 10, title, {
-      fontFamily: "Courier New",
-      fontSize: "12px",
-      color: "#f59e0b",
-      fontWeight: "bold",
+    // System controls
+    this.createButton(width - 300, panelY + 20, "📦 SUPPLY DROP", () => {
+      this.requestSupplyDrop();
     });
 
-    return panel;
+    this.createButton(width - 180, panelY + 20, "🏥 MEDICAL", () => {
+      this.requestMedicalAssistance();
+    });
+
+    this.createButton(width - 80, panelY + 20, "🚁 DRONE", () => {
+      this.launchDrone();
+    });
   }
 
   createButton(x, y, text, callback) {
@@ -222,80 +315,114 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     return button;
   }
 
-  setupEventListeners() {
-    this.game.events.on("timeSpeedChanged", (speed) => {
-      this.setTimeSpeed(speed);
-    });
-  }
-
+  // Time control methods
   setTimeSpeed(speed) {
+    this.timeController.setTimeSpeed(speed);
+
+    // Update speed indicator
     const speedText = speed === 0 ? "PAUSED" : `${speed}X`;
     this.speedIndicator.setText(`Speed: ${speedText}`);
 
-    this.timeButtons.forEach(({ button, speed: buttonSpeed }) => {
+    // Update button appearance
+    this.timeControlButtons.forEach(({ button, speed: buttonSpeed }) => {
       if (buttonSpeed === speed) {
         button.setStyle({ backgroundColor: "#10b981", color: "#0f172a" });
       } else {
         button.setStyle({ backgroundColor: "#475569", color: "#e2e8f0" });
       }
     });
-
-    console.log(`⏱️ Time speed set to: ${speedText}`);
   }
 
-  startClock() {
-    this.timeInterval = setInterval(() => {
-      const gameState = this.game.registry.get("gameState");
-      if (gameState.timeSpeed > 0) {
-        this.currentTime.setMinutes(
-          this.currentTime.getMinutes() + gameState.timeSpeed
-        );
-        this.timeDisplay.setText(this.formatTime(this.currentTime));
-      }
-    }, 1000);
+  updateTimeDisplay(gameTime) {
+    if (this.timeDisplay) {
+      this.timeDisplay.setText(this.timeController.formatGameTime());
+    }
   }
 
-  loadInitialData() {
-    // Sample messages
-    const messages = [
+  // Resource management methods
+  requestSupplyDrop() {
+    const caravans = this.dataManager.getAllCaravans();
+    if (caravans.length > 0) {
+      const targetCaravan = caravans[0]; // For now, just use first caravan
+      this.resourceManager.allocateSupplyDrop(targetCaravan.id, "general");
+    } else {
+      console.log("No caravans available for supply drop");
+    }
+  }
+
+  requestMedicalAssistance() {
+    const caravans = this.dataManager.getAllCaravans();
+    if (caravans.length > 0) {
+      const targetCaravan = caravans[0]; // For now, just use first caravan
+      this.resourceManager.deployMedicalTeam(targetCaravan.id);
+    }
+  }
+
+  launchDrone() {
+    this.resourceManager.launchDroneRecon("Grid-7-Delta");
+  }
+
+  // Display update methods
+  displayResources(resources) {
+    // Clear existing resource display
+    this.resourceContainer.removeAll(true);
+
+    const resourceItems = [
       {
-        id: 1,
-        from: "Caravan Alpha-7",
-        subject: "URGENT: Dust storm approaching",
-        time: "14:23",
-        priority: "high",
+        label: "Supply Drops Available",
+        value: resources.availableSupplyDrops,
+        color: "#10b981",
       },
       {
-        id: 2,
-        from: "Weather Station Delta",
-        subject: "Extreme heat warning - Zone 7",
-        time: "13:45",
-        priority: "medium",
+        label: "Active Drones",
+        value: resources.activeDrones,
+        color: "#06b6d4",
+      },
+      {
+        label: "Fuel Depots Online",
+        value: resources.fuelDepots,
+        color: "#f59e0b",
+      },
+      {
+        label: "Medical Teams",
+        value: resources.medicalTeams,
+        color: "#ef4444",
       },
     ];
 
-    this.displayMessages(messages);
+    resourceItems.forEach((resource, index) => {
+      const y = index * 30;
 
-    // Sample caravans
-    const caravans = [
-      {
-        id: "Alpha-7",
-        leader: "Maria Santos",
-        members: 12,
-        status: "moving",
-        fuel: 60,
-        water: 45,
-      },
-    ];
+      this.resourceContainer.add(
+        this.add.text(5, y, resource.label, {
+          fontFamily: "Courier New",
+          fontSize: "10px",
+          color: "#cbd5e1",
+        })
+      );
 
-    this.displayCaravans(caravans);
+      this.resourceContainer.add(
+        this.add
+          .text(220, y, resource.value.toString(), {
+            fontFamily: "Courier New",
+            fontSize: "14px",
+            color: resource.color,
+            fontWeight: "bold",
+          })
+          .setOrigin(1, 0)
+      );
+    });
   }
 
   displayMessages(messages) {
+    // Clear existing messages
     this.messageContainer.removeAll(true);
 
-    messages.forEach((message, index) => {
-      const y = index * 40;
+    // Display up to 6 most recent messages
+    const displayMessages = messages.slice(0, 6);
+
+    displayMessages.forEach((message, index) => {
+      const y = index * 45;
       const priorityColor =
         message.priority === "high"
           ? "#ef4444"
@@ -303,12 +430,12 @@ export default class CoordinatorTerminal extends Phaser.Scene {
           ? "#f59e0b"
           : "#10b981";
 
-      // Priority dot
+      // Priority indicator
       this.messageContainer.add(this.add.circle(5, y + 10, 4, priorityColor));
 
-      // Message info
+      // Message text
       this.messageContainer.add(
-        this.add.text(20, y, message.from, {
+        this.add.text(20, y, `${message.from}`, {
           fontFamily: "Courier New",
           fontSize: "10px",
           color: "#10b981",
@@ -331,15 +458,27 @@ export default class CoordinatorTerminal extends Phaser.Scene {
           color: "#94a3b8",
         })
       );
+
+      // Make message clickable
+      const messageArea = this.add
+        .rectangle(10, y + 15, 300, 35, 0x000000, 0)
+        .setInteractive()
+        .on("pointerdown", () => {
+          this.selectMessage(message);
+        });
+
+      this.messageContainer.add(messageArea);
     });
   }
 
   displayCaravans(caravans) {
+    // Clear existing caravans
     this.caravanContainer.removeAll(true);
 
     caravans.forEach((caravan, index) => {
-      const y = index * 80;
+      const y = index * 90;
 
+      // Caravan ID
       this.caravanContainer.add(
         this.add.text(0, y, caravan.id, {
           fontFamily: "Courier New",
@@ -349,6 +488,7 @@ export default class CoordinatorTerminal extends Phaser.Scene {
         })
       );
 
+      // Leader
       this.caravanContainer.add(
         this.add.text(0, y + 15, `Leader: ${caravan.leader}`, {
           fontFamily: "Courier New",
@@ -357,6 +497,7 @@ export default class CoordinatorTerminal extends Phaser.Scene {
         })
       );
 
+      // Members
       this.caravanContainer.add(
         this.add.text(0, y + 27, `Members: ${caravan.members}`, {
           fontFamily: "Courier New",
@@ -365,7 +506,13 @@ export default class CoordinatorTerminal extends Phaser.Scene {
         })
       );
 
-      const statusColor = caravan.status === "moving" ? "#10b981" : "#f59e0b";
+      // Status
+      const statusColor =
+        caravan.status === "moving"
+          ? "#10b981"
+          : caravan.status === "emergency"
+          ? "#ef4444"
+          : "#f59e0b";
       this.caravanContainer.add(
         this.add.text(0, y + 39, `Status: ${caravan.status}`, {
           fontFamily: "Courier New",
@@ -374,11 +521,12 @@ export default class CoordinatorTerminal extends Phaser.Scene {
         })
       );
 
+      // Resources
       this.caravanContainer.add(
         this.add.text(
           0,
           y + 51,
-          `Fuel: ${caravan.fuel}% | Water: ${caravan.water}%`,
+          `F:${caravan.resources.fuel}% W:${caravan.resources.water}%`,
           {
             fontFamily: "Courier New",
             fontSize: "8px",
@@ -386,22 +534,64 @@ export default class CoordinatorTerminal extends Phaser.Scene {
           }
         )
       );
+
+      this.caravanContainer.add(
+        this.add.text(
+          0,
+          y + 63,
+          `Food:${caravan.resources.food}% Med:${caravan.resources.medicine}%`,
+          {
+            fontFamily: "Courier New",
+            fontSize: "8px",
+            color: "#94a3b8",
+          }
+        )
+      );
+
+      // Make caravan clickable
+      const caravanArea = this.add
+        .rectangle(100, y + 35, 180, 80, 0x000000, 0)
+        .setInteractive()
+        .on("pointerdown", () => {
+          this.selectCaravan(caravan);
+        });
+
+      this.caravanContainer.add(caravanArea);
     });
   }
 
-  formatTime(date) {
-    return date.toLocaleTimeString("en-US", {
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+  updateCaravanDisplay() {
+    // Refresh caravan display with updated data
+    this.displayCaravans(this.dataManager.getAllCaravans());
+  }
+
+  // Interaction methods
+  selectMessage(message) {
+    console.log(`📧 Selected message: ${message.subject}`);
+    this.messageSystem.markMessageAsRead(message.id);
+    // TODO: Show detailed message view in Phase 2
+  }
+
+  selectCaravan(caravan) {
+    console.log(`📍 Selected caravan: ${caravan.id}`);
+    // TODO: Show detailed caravan view in Phase 2
   }
 
   destroy() {
-    if (this.timeInterval) {
-      clearInterval(this.timeInterval);
+    // Clean up all systems
+    if (this.timeController) {
+      this.timeController.destroy();
     }
+    if (this.messageSystem) {
+      this.messageSystem.destroy();
+    }
+    if (this.resourceManager) {
+      this.resourceManager.destroy();
+    }
+    if (this.caravanManager) {
+      this.caravanManager.destroy();
+    }
+
     super.destroy();
   }
 }
