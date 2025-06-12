@@ -172,8 +172,8 @@ export default class CoordinatorTerminal extends Phaser.Scene {
       })
       .setOrigin(1, 0);
 
-    // Store header height for layout calculations
-    this.headerHeight = headerHeight;
+    // Store header height for layout calculations (add nav height)
+    this.headerHeight = headerHeight + 50; // 50px for navigation tabs
   }
 
   createTimeDisplay() {
