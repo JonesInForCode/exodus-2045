@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exodus 2045 - Debug Helper</title>
+    <style>
+      body {
+        font-family: "Courier New", monospace;
+        background: #0f172a;
+        color: #10b981;
+        margin: 20px;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 800px;
+      }
+      .status-check {
+        background: #1e293b;
+        padding: 15px;
+        margin: 10px 0;
+        border-left: 4px solid #10b981;
+      }
+      .error {
+        border-left-color: #ef4444;
+        color: #ef4444;
+      }
+      .warning {
+        border-left-color: #f59e0b;
+        color: #f59e0b;
+      }
+      button {
+        background: #10b981;
+        color: #0f172a;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        font-family: "Courier New", monospace;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #059669;
+      }
+      #log {
+        background: #000;
+        color: #00ff00;
+        padding: 15px;
+        height: 300px;
+        overflow-y: auto;
+        font-size: 12px;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🛠️ Exodus 2045 - Debug Helper</h1>
+      <p>Use this page to diagnose loading issues and verify file structure.</p>
+
+      <div id="status-container">
+        <div class="status-check">📁 Checking file structure...</div>
+      </div>
+
+      <div>
+        <button onclick="checkFiles()">🔍 Check Files</button>
+        <button onclick="testPhaser()">🎮 Test Phaser</button>
+        <button onclick="testGame()">🚀 Launch Game</button>
+        <button onclick="clearLog()">🗑️ Clear Log</button>
+      </div>
+
+      <h3>📋 Console Log:</h3>
+      <div id="log"></div>
+    </div>
+
+    <script>
+      function log(message) {
+        const logEl = document.getElementById("log");
+        const timestamp = new Date().toLocaleTimeString();
+        logEl.textContent += `[${timestamp}] ${message}\n`;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      function clearLog() {
+        document.getElementById("log").textContent = "";
+      }
+
+      function updateStatus(message, type = "success") {
+        const container = document.getElementById("status-container");
+        const className =
+          type === "error"
+            ? "status-check error"
+            : type === "warning"
+            ? "status-check warning"
+            : "status-check";
+        container.innerHTML = `<div class="${className}">${message}</div>`;
+      }
+
+      async function checkFiles() {
+        log("🔍 Starting file structure check...");
+        updateStatus("📁 Checking files...");
+
+        const filesToCheck = [
+          "/src/main.js",
+          "/src/scenes/CoordinatorTerminal.js",
+          "/src/scenes/MapView.js",
+          "/src/scenes/GameUI.js",
+          "/src/data/caravans.json",
+        ];
+
+        let allGood = true;
+
+        for (const file of filesToCheck) {
+          try {
+            const response = await fetch(file);
+            if (response.ok) {
+              log(`✅ Found: ${file}`);
+            } else {
+              log(`❌ Missing: ${file} (${response.status})`);
+              allGood = false;
+            }
+          } catch (error) {
+            log(`❌ Error loading ${file}: ${error.message}`);
+            allGood = false;
+          }
+        }
+
+        if (allGood) {
+          updateStatus("✅ All files found!");
+          log("🎉 File structure check complete - all good!");
+        } else {
+          updateStatus("❌ Some files are missing", "error");
+          log("⚠️ Some files are missing - check the log above");
+        }
+      }
+
+      function testPhaser() {
+        log("🎮 Testing Phaser availability...");
+
+        if (typeof Phaser !== "undefined") {
+          log(`✅ Phaser ${Phaser.VERSION} loaded successfully`);
+          updateStatus("✅ Phaser loaded");
+        } else {
+          log("❌ Phaser not loaded");
+          updateStatus("❌ Phaser not available", "error");
+
+          // Try to load Phaser
+          log("📥 Attempting to load Phaser...");
+          const script = document.createElement("script");
+          script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/phaser/3.70.0/phaser.min.js";
+          script.onload = () => {
+            log("✅ Phaser loaded from CDN");
+            updateStatus("✅ Phaser loaded from CDN");
+          };
+          script.onerror = () => {
+            log("❌ Failed to load Phaser from CDN");
+            updateStatus("❌ Phaser loading failed", "error");
+          };
+          document.head.appendChild(script);
+        }
+      }
+
+      function testGame() {
+        log("🚀 Attempting to launch game...");
+        window.open("index.html", "_blank");
+      }
+
+      // Auto-check on load
+      window.addEventListener("load", () => {
+        log("🛠️ Debug helper loaded");
+        setTimeout(checkFiles, 1000);
+        setTimeout(testPhaser, 2000);
+      });
+
+      // Capture console messages
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+
+      console.log = function (...args) {
+        log("📝 LOG: " + args.join(" "));
+        originalLog.apply(console, args);
+      };
+
+      console.error = function (...args) {
+        log("💥 ERROR: " + args.join(" "));
+        originalError.apply(console, args);
+      };
+
+      console.warn = function (...args) {
+        log("⚠️ WARN: " + args.join(" "));
+        originalWarn.apply(console, args);
+      };
+    </script>
+  </body>
+</html>
