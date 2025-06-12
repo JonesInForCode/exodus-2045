@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exodus 2045 - Coordination Terminal</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Courier New", monospace;
+        background: #0a0a0a;
+        color: #00ff41;
+        overflow: hidden;
+      }
+
+      #game-container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+
+      /* Terminal-style loading screen */
+      #loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0a0a0a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        z-index: 1000;
+      }
+
+      #loading.hidden {
+        display: none;
+      }
+
+      .loading-text {
+        color: #00ff41;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px #00ff41;
+      }
+
+      .loading-bar {
+        width: 300px;
+        height: 20px;
+        border: 2px solid #00ff41;
+        background: transparent;
+        position: relative;
+        margin-bottom: 1rem;
+      }
+
+      .loading-fill {
+        height: 100%;
+        background: #00ff41;
+        width: 0%;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 15px #00ff41;
+      }
+
+      .system-info {
+        color: #555;
+        font-size: 0.8rem;
+        text-align: center;
+        line-height: 1.4;
+      }
+
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .blink {
+        animation: blink 1s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <!-- Loading Screen -->
+      <div id="loading">
+        <div class="loading-text">EXODUS COORDINATION SYSTEM</div>
+        <div class="loading-text">
+          Initializing Terminal<span class="blink">_</span>
+        </div>
+        <div class="loading-bar">
+          <div class="loading-fill" id="loading-fill"></div>
+        </div>
+        <div class="system-info">
+          🛰️ Establishing satellite uplink...<br />
+          📡 Loading caravan tracking data...<br />
+          🗺️ Calibrating GPS coordinates...<br />
+          ⚡ Initializing crisis management protocols...
+        </div>
+      </div>
+
+      <!-- Game will be injected here -->
+      <div id="phaser-game"></div>
+    </div>
+
+    <script type="module" src="../src/main.js"></script>
+  </body>
+</html>
