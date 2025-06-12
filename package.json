@@ -10,17 +10,22 @@
     "preview": "vite preview",
     "serve": "vite preview --host"
   },
-  "keywords": ["game", "simulation", "crisis-management", "phaser"],
+  "keywords": [
+    "game",
+    "simulation",
+    "crisis-management",
+    "phaser"
+  ],
   "author": "Nicolas Jones 'JonesInForCode' ",
   "license": "MIT",
   "dependencies": {
     "phaser": "^3.70.0"
   },
   "devDependencies": {
-    "vite": "^5.0.0",
-    "typescript": "^5.0.0",
+    "@eslint/js": "^9.0.0",
     "@types/node": "^20.0.0",
     "eslint": "^8.0.0",
-    "@eslint/js": "^9.0.0"
+    "typescript": "^5.0.0",
+    "vite": "^6.3.5"
   }
 }
