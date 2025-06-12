@@ -23,7 +23,8 @@ export default class BootScene extends Phaser.Scene {
 
     // Small delay, then launch the initial content scene
     this.time.delayedCall(300, () => {
-      this.scene.launch("CoordinatorTerminal");
+      // Use 'start' instead of 'launch' for the initial scene
+      this.scene.start("CoordinatorTerminal");
       console.log("✅ All scenes initialized - game ready");
     });
   }

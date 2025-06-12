@@ -13,6 +13,9 @@ export default class GameUI extends Phaser.Scene {
     this.createNotificationSystem();
     this.setupEventListeners();
 
+    // Ensure GameUI always renders on top of other scenes
+    this.scene.bringToTop();
+
     console.log("🖥️ GameUI with comprehensive tab system initialized");
   }
 
@@ -177,18 +180,21 @@ export default class GameUI extends Phaser.Scene {
     // Update tab appearances
     this.updateTabAppearances();
 
-    // Stop current content scene
-    if (
-      previousTab === "terminal" &&
-      this.scene.isActive("CoordinatorTerminal")
-    ) {
-      this.scene.stop("CoordinatorTerminal");
-    } else if (previousTab === "map" && this.scene.isActive("MapView")) {
-      this.scene.stop("MapView");
-    }
-    // Add more scene stops here as you add new views
+    // Stop ALL content scenes first (but never stop GameUI itself)
+    const scenesToStop = [
+      "CoordinatorTerminal",
+      "MapView",
+      "AnalyticsView",
+      "RadioView",
+      "CaravanDetails",
+    ];
+    scenesToStop.forEach((scene) => {
+      if (this.scene.isActive(scene)) {
+        this.scene.stop(scene);
+      }
+    });
 
-    // Start new scene
+    // Start new scene - use 'launch' to run alongside GameUI
     this.scene.launch(sceneName);
 
     // Update game state to track current view

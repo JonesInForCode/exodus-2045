@@ -19,9 +19,12 @@ export default class MapView extends Phaser.Scene {
 
   create() {
     const { width, height } = this.scale;
+    const tabHeight = 40; // Height of the tab bar
 
-    // Map background
-    this.add.rectangle(0, 0, width, height, 0x0f172a).setOrigin(0, 0);
+    // Map background - start below the tab bar
+    this.add
+      .rectangle(0, tabHeight, width, height - tabHeight, 0x0f172a)
+      .setOrigin(0, 0);
 
     // Main map container
     this.mapContainer = this.add.container(0, 0);
@@ -57,12 +60,13 @@ export default class MapView extends Phaser.Scene {
 
   createMapHeader() {
     const { width } = this.scale;
+    const tabHeight = 40;
 
-    // Header background
-    this.add.rectangle(0, 0, width, 60, 0x1e293b).setOrigin(0, 0);
+    // Header background - positioned below tab bar
+    this.add.rectangle(0, tabHeight, width, 60, 0x1e293b).setOrigin(0, 0);
 
     // Title
-    this.add.text(20, 15, "🗺️ WESTERN REGION TRACKING MAP", {
+    this.add.text(20, tabHeight + 15, "🗺️ WESTERN REGION TRACKING MAP", {
       fontFamily: "Courier New",
       fontSize: "18px",
       color: "#10b981",
@@ -72,7 +76,7 @@ export default class MapView extends Phaser.Scene {
     // Map info
     this.add.text(
       20,
-      35,
+      tabHeight + 35,
       "Grid: USGS-2045 | Scale: 1:2,500,000 | Projection: Modified Mercator",
       {
         fontFamily: "Courier New",
@@ -83,7 +87,7 @@ export default class MapView extends Phaser.Scene {
 
     // Status indicator
     this.add
-      .text(width - 20, 30, "🟢 SATELLITE LINK ACTIVE", {
+      .text(width - 20, tabHeight + 30, "🟢 SATELLITE LINK ACTIVE", {
         fontFamily: "Courier New",
         fontSize: "12px",
         color: "#10b981",
