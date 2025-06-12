@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+// Phaser is loaded globally from CDN
 
 export default class GameUI extends Phaser.Scene {
   constructor() {

@@ -113,6 +113,15 @@
       <div id="phaser-game"></div>
     </div>
 
-    <script type="module" src="/src/main.js"></script>
+    <!-- Load Phaser from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.70.0/phaser.min.js"></script>
+
+    <!-- Game scenes -->
+    <script type="module" src="js/scenes/CoordinatorTerminal.js"></script>
+    <script type="module" src="js/scenes/MapView.js"></script>
+    <script type="module" src="js/scenes/GameUI.js"></script>
+
+    <!-- Main game script -->
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>

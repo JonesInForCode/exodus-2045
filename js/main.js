@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+// Phaser is loaded globally from CDN, no import needed
 import CoordinatorTerminal from "./scenes/CoordinatorTerminal.js";
 import MapView from "./scenes/MapView.js";
 import GameUI from "./scenes/GameUI.js";
@@ -85,17 +85,25 @@ function initializeGame() {
       case "Space":
         event.preventDefault();
         // Toggle pause/play
-        const currentSpeed = game.registry.get("gameState").ui.timeSpeed;
-        game.registry.set("gameState.ui.timeSpeed", currentSpeed === 0 ? 1 : 0);
+        const gameState = game.registry.get("gameState");
+        const currentSpeed = gameState.ui.timeSpeed;
+        gameState.ui.timeSpeed = currentSpeed === 0 ? 1 : 0;
+        game.registry.set("gameState", gameState);
         break;
       case "Digit1":
-        game.registry.set("gameState.ui.timeSpeed", 1);
+        const gameState1 = game.registry.get("gameState");
+        gameState1.ui.timeSpeed = 1;
+        game.registry.set("gameState", gameState1);
         break;
       case "Digit2":
-        game.registry.set("gameState.ui.timeSpeed", 2);
+        const gameState2 = game.registry.get("gameState");
+        gameState2.ui.timeSpeed = 2;
+        game.registry.set("gameState", gameState2);
         break;
       case "Digit4":
-        game.registry.set("gameState.ui.timeSpeed", 4);
+        const gameState4 = game.registry.get("gameState");
+        gameState4.ui.timeSpeed = 4;
+        game.registry.set("gameState", gameState4);
         break;
     }
   });
