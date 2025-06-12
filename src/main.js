@@ -57,7 +57,7 @@ function simulateLoading() {
 
         setTimeout(() => {
           loadingElement.classList.add("hidden");
-          initializeGame();
+          showLoginSequence();
         }, 500);
       }, 300);
       return;
@@ -77,6 +77,127 @@ function simulateLoading() {
 
     stepIndex++;
   }, 300 + Math.random() * 400); // Variable timing for realism
+}
+
+// Login simulation sequence
+function showLoginSequence() {
+  // Create login screen HTML
+  const loginHTML = `
+    <div id="login-screen" style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', monospace;
+      color: #00ff41;
+    ">
+      <div style="
+        width: 500px;
+        background: #1a1a1a;
+        border: 2px solid #00ff41;
+        padding: 40px;
+        text-align: center;
+      ">
+        <h2 style="margin-bottom: 30px; color: #00ff41;">EXODUS COORDINATION SYSTEM</h2>
+        <div style="text-align: left; margin-bottom: 20px;">
+          <div>User ID: <span id="typing-user" style="background: #333; padding: 2px 4px;"></span><span id="cursor-user" style="animation: blink 1s infinite;">_</span></div>
+        </div>
+        <div style="text-align: left; margin-bottom: 30px;">
+          <div>Password: <span id="typing-pass" style="background: #333; padding: 2px 4px;"></span><span id="cursor-pass" style="animation: blink 1s infinite; display: none;">_</span></div>
+        </div>
+        <div id="access-granted" style="
+          display: none;
+          background: #10b981;
+          color: #0a0a0a;
+          padding: 15px;
+          margin: 20px 0;
+          font-weight: bold;
+        ">ACCESS GRANTED - LEVEL 3 CLEARANCE</div>
+        <div id="login-status" style="color: #94a3b8; font-size: 12px;">Authenticating...</div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", loginHTML);
+
+  // Typing simulation
+  const userId = "S.MARTINEZ.L3";
+  const password = "••••••••••";
+
+  let userIndex = 0;
+  let passIndex = 0;
+
+  const userElement = document.getElementById("typing-user");
+  const passElement = document.getElementById("typing-pass");
+  const userCursor = document.getElementById("cursor-user");
+  const passCursor = document.getElementById("cursor-pass");
+  const statusElement = document.getElementById("login-status");
+  const accessElement = document.getElementById("access-granted");
+
+  // Type user ID
+  const typeUser = () => {
+    if (userIndex < userId.length) {
+      userElement.textContent += userId[userIndex];
+      userIndex++;
+      setTimeout(typeUser, 120 + Math.random() * 80); // Realistic typing speed
+    } else {
+      userCursor.style.display = "none";
+      passCursor.style.display = "inline";
+      setTimeout(typePassword, 300);
+    }
+  };
+
+  // Type password
+  const typePassword = () => {
+    if (passIndex < password.length) {
+      passElement.textContent += password[passIndex];
+      passIndex++;
+      setTimeout(typePassword, 100 + Math.random() * 60);
+    } else {
+      passCursor.style.display = "none";
+      setTimeout(showAccessGranted, 800);
+    }
+  };
+
+  // Show access granted
+  const showAccessGranted = () => {
+    statusElement.textContent = "Verification complete...";
+    setTimeout(() => {
+      accessElement.style.display = "block";
+      statusElement.textContent = "Initializing coordinator interface...";
+      setTimeout(startFlickerTransition, 1500);
+    }, 1000);
+  };
+
+  // Flicker transition effect
+  const startFlickerTransition = () => {
+    const loginScreen = document.getElementById("login-screen");
+    let flickerCount = 0;
+    const maxFlickers = 6;
+
+    const flicker = () => {
+      loginScreen.style.opacity = loginScreen.style.opacity === "0" ? "1" : "0";
+      flickerCount++;
+
+      if (flickerCount < maxFlickers * 2) {
+        setTimeout(flicker, 100 + Math.random() * 100);
+      } else {
+        loginScreen.remove();
+        initializeGame();
+      }
+    };
+
+    flicker();
+  };
+
+  // Start typing after a brief delay
+  setTimeout(typeUser, 800);
 }
 
 // Initialize Phaser game with enhanced state management

@@ -358,8 +358,14 @@ export default class CoordinatorTerminal extends Phaser.Scene {
   }
 
   updateTimeDisplay(gameTime) {
-    if (this.timeDisplay) {
-      this.timeDisplay.setText(this.timeController.formatGameTime());
+    if (this.timeDisplay && this.timeDisplay.active) {
+      try {
+        this.timeDisplay.setText(this.timeController.formatGameTime());
+      } catch (error) {
+        console.warn("Time display update failed:", error);
+        // Recreate time display if corrupted
+        this.createTimeDisplay();
+      }
     }
   }
 
@@ -388,6 +394,11 @@ export default class CoordinatorTerminal extends Phaser.Scene {
 
   // Display update methods
   displayResources(resources) {
+    // Safety check for resources object
+    if (!resources || typeof resources !== "object") {
+      console.warn("Invalid resources object received:", resources);
+      return;
+    }
     // Clear existing resource display
     this.resourceContainer.removeAll(true);
 
@@ -427,7 +438,7 @@ export default class CoordinatorTerminal extends Phaser.Scene {
 
       this.resourceContainer.add(
         this.add
-          .text(220, y, resource.value.toString(), {
+          .text(220, y, (resource.value || 0).toString(), {
             fontFamily: "Courier New",
             fontSize: "14px",
             color: resource.color,
