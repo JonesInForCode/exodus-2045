@@ -188,11 +188,20 @@ export default class CoordinatorTerminal extends Phaser.Scene {
 
     // Current time display (positioned relative to terminal header)
     this.timeDisplay = this.add
-      .text(width - 20, tabHeight + 40, "00:00:00", {
+      .text(width - 250, tabHeight + 30, "00:00:00", {
         fontFamily: "Courier New",
         fontSize: "24px",
         color: "#f59e0b",
         fontWeight: "bold",
+      })
+      .setOrigin(1, 0);
+
+    // Add date display to the left of system status text
+    this.dateDisplay = this.add
+      .text(width - 250, tabHeight + 20, "", {
+        fontFamily: "Courier New",
+        fontSize: "12px",
+        color: "#94a3b8",
       })
       .setOrigin(1, 0);
   }
@@ -368,6 +377,10 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     if (this.timeDisplay && this.timeDisplay.active) {
       try {
         this.timeDisplay.setText(this.timeController.formatGameTime());
+        // Update date display if it exists
+        if (this.dateDisplay && this.dateDisplay.active) {
+          this.dateDisplay.setText(this.timeController.formatGameDate());
+        }
       } catch (error) {
         console.warn("Time display update failed:", error);
         // Recreate time display if corrupted

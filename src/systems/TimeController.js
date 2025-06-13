@@ -6,9 +6,10 @@
 export default class TimeController {
   constructor(scene) {
     this.scene = scene;
-    this.gameTime = new Date();
+    // Set game start time to June 1st, 2045 at 6:00 AM
+    this.gameTime = new Date(2045, 5, 1, 6, 0, 0); // Note: month is 0-indexed, so 5 = June
     this.realStartTime = Date.now();
-    this.gameStartTime = new Date(this.gameTime);
+    this.gameStartTime = new Date(2045, 5, 1, 6, 0, 0);
 
     // Time speed settings
     this.timeSpeed = 1; // 1x, 2x, 4x multipliers

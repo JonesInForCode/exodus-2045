@@ -559,30 +559,177 @@ export default class MapView extends Phaser.Scene {
 
     // Legend items
     const legendItems = [
-      { color: 0x10b981, symbol: "●", label: "Active Caravan" },
-      { color: 0xf59e0b, symbol: "◐", label: "Resting Caravan" },
-      { color: 0xef4444, symbol: "⚠", label: "Emergency Status" },
-      { color: 0x64748b, symbol: "■", label: "City/Checkpoint" },
-      { color: 0x334155, symbol: "—", label: "State Boundary" },
-      { color: 0x1e293b, symbol: "⋯", label: "Grid Lines" },
+      // Caravan Status
+      {
+        color: "#10b981",
+        symbol: "🚐",
+        label: "Active Caravan",
+        category: "Caravans",
+      },
+      {
+        color: "#f59e0b",
+        symbol: "⏸",
+        label: "Resting Caravan",
+        category: "Caravans",
+      },
+      {
+        color: "#ef4444",
+        symbol: "🆘",
+        label: "Emergency Caravan",
+        category: "Caravans",
+      },
+      {
+        color: "#6b7280",
+        symbol: "📡",
+        label: "Lost Signal",
+        category: "Caravans",
+      },
+      {
+        color: "#8b5cf6",
+        symbol: "🏠",
+        label: "Sheltering",
+        category: "Caravans",
+      },
+
+      // Infrastructure & Safety
+      {
+        color: "#10b981",
+        symbol: "🏥",
+        label: "Medical Station",
+        category: "Safety",
+      },
+      {
+        color: "#06b6d4",
+        symbol: "⛽",
+        label: "Fuel Depot",
+        category: "Safety",
+      },
+      {
+        color: "#84cc16",
+        symbol: "📦",
+        label: "Supply Cache",
+        category: "Safety",
+      },
+      { color: "#10b981", symbol: "🛡", label: "Safe Zone", category: "Safety" },
+      {
+        color: "#64748b",
+        symbol: "🏛",
+        label: "Checkpoint",
+        category: "Safety",
+      },
+
+      // Hazards & Obstacles
+      {
+        color: "#ef4444",
+        symbol: "⚠",
+        label: "Danger Zone",
+        category: "Hazards",
+      },
+      {
+        color: "#dc2626",
+        symbol: "🚫",
+        label: "Route Blocked",
+        category: "Hazards",
+      },
+      {
+        color: "#f59e0b",
+        symbol: "🌪",
+        label: "Weather Hazard",
+        category: "Hazards",
+      },
+      {
+        color: "#991b1b",
+        symbol: "☢",
+        label: "Contaminated Area",
+        category: "Hazards",
+      },
+      {
+        color: "#7c2d12",
+        symbol: "🔥",
+        label: "Fire Zone",
+        category: "Hazards",
+      },
+
+      // Landmarks & Geography
+      {
+        color: "#64748b",
+        symbol: "🏙",
+        label: "Ruined City",
+        category: "Landmarks",
+      },
+      {
+        color: "#059669",
+        symbol: "🏔",
+        label: "Climate Safe Zone",
+        category: "Landmarks",
+      },
+      {
+        color: "#1d4ed8",
+        symbol: "💧",
+        label: "Water Source",
+        category: "Landmarks",
+      },
+      {
+        color: "#334155",
+        symbol: "━",
+        label: "Major Route",
+        category: "Geography",
+      },
+      {
+        color: "#475569",
+        symbol: "┄",
+        label: "Secondary Path",
+        category: "Geography",
+      },
     ];
 
-    legendItems.forEach((item, index) => {
-      const y = legendY + 40 + index * 25;
+    // Group items by category
+    const categories = {};
+    legendItems.forEach((item) => {
+      if (!categories[item.category]) {
+        categories[item.category] = [];
+      }
+      categories[item.category].push(item);
+    });
 
-      // Symbol
-      this.add.text(legendX + 15, y, item.symbol, {
-        fontFamily: "Courier New",
-        fontSize: "14px",
-        color: Phaser.Display.Color.GetColor32(item.color),
+    let yOffset = 40;
+
+    // Render each category
+    Object.entries(categories).forEach(([categoryName, items]) => {
+      // Category header
+      this.add.text(
+        legendX + 10,
+        legendY + yOffset,
+        `${categoryName.toUpperCase()}`,
+        {
+          fontFamily: "Courier New",
+          fontSize: "10px",
+          color: "#f59e0b",
+          fontWeight: "bold",
+        }
+      );
+      yOffset += 20;
+
+      // Category items
+      items.forEach((item) => {
+        // Symbol
+        this.add.text(legendX + 15, legendY + yOffset, item.symbol, {
+          fontFamily: "Courier New",
+          fontSize: "12px",
+          color: item.color,
+        });
+
+        // Label
+        this.add.text(legendX + 35, legendY + yOffset, item.label, {
+          fontFamily: "Courier New",
+          fontSize: "9px",
+          color: "#cbd5e1",
+        });
+
+        yOffset += 18;
       });
 
-      // Label
-      this.add.text(legendX + 35, y, item.label, {
-        fontFamily: "Courier New",
-        fontSize: "10px",
-        color: "#cbd5e1",
-      });
+      yOffset += 8; // Extra space between categories
     });
 
     // Caravan info panel
