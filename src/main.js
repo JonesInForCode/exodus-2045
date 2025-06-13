@@ -392,10 +392,8 @@ function initializeGame() {
     };
   }
 
-  // To this:
-  // Directly start both scenes to avoid any timing issues
-  game.scene.start("GameUI");
-  game.scene.launch("CoordinatorTerminal");
+  // Launch starting game scene booter
+  game.scene.start("BootScene");
   console.log("🛰️ Exodus 2045 Coordination System Online");
   console.log("📋 Phase 1: Foundation Systems Active");
   console.log("🎮 Controls: SPACE (pause), 1/2/4 (speed), M (map), R (radio)");

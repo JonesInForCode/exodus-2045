@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export default class MapView extends Phaser.Scene {
   constructor() {
     super({ key: "MapView" });
