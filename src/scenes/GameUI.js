@@ -219,15 +219,30 @@ export default class GameUI extends Phaser.Scene {
       const isActive = this.currentTab === button.key;
       const isDisabled = !button.enabled;
 
-      if (isDisabled) {
-        button.background.setFillStyle(0x374151);
-        button.text.setStyle({ color: "#6b7280", fontWeight: "normal" });
-      } else if (isActive) {
-        button.background.setFillStyle(0x10b981);
-        button.text.setStyle({ color: "#0f172a", fontWeight: "bold" });
-      } else {
-        button.background.setFillStyle(0x475569);
-        button.text.setStyle({ color: "#e2e8f0", fontWeight: "normal" });
+      // Add safety checks to prevent WebGL texture errors
+      if (
+        !button.background ||
+        !button.background.active ||
+        !button.text ||
+        !button.text.active
+      ) {
+        return; // Skip this button if objects are destroyed
+      }
+
+      try {
+        if (isDisabled) {
+          button.background.setFillStyle(0x374151);
+          button.text.setStyle({ color: "#6b7280", fontWeight: "normal" });
+        } else if (isActive) {
+          button.background.setFillStyle(0x10b981);
+          button.text.setStyle({ color: "#0f172a", fontWeight: "bold" });
+        } else {
+          button.background.setFillStyle(0x475569);
+          button.text.setStyle({ color: "#e2e8f0", fontWeight: "normal" });
+        }
+      } catch (error) {
+        console.warn("Tab appearance update failed:", error);
+        // Optionally recreate the tab if needed
       }
     });
   }
