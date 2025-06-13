@@ -175,13 +175,11 @@ export default class DataManager {
     if (caravan) {
       Object.keys(resourceChanges).forEach((resource) => {
         if (caravan.resources[resource] !== undefined) {
-          caravan.resources[resource] = Math.max(
-            0,
-            Math.min(
-              100,
-              caravan.resources[resource] + resourceChanges[resource]
-            )
-          );
+          const newValue =
+            caravan.resources[resource] + resourceChanges[resource];
+          caravan.resources[resource] = Math.round(
+            Math.max(0, Math.min(100, newValue))
+          ); // Added Math.round()
         }
       });
       console.log(`📊 ${caravanId} resources updated:`, resourceChanges);

@@ -458,7 +458,8 @@ export default class CoordinatorTerminal extends Phaser.Scene {
 
       this.resourceContainer.add(
         this.add
-          .text(220, y, (resource.value || 0).toString(), {
+          .text(220, y, Math.round(resource.value || 0).toString(), {
+            // Added Math.round()
             fontFamily: "Courier New",
             fontSize: "14px",
             color: resource.color,
@@ -576,12 +577,14 @@ export default class CoordinatorTerminal extends Phaser.Scene {
         })
       );
 
-      // Resources
+      // Resources - fix to show clean integers
       this.caravanContainer.add(
         this.add.text(
           0,
           y + 51,
-          `F:${caravan.resources.fuel}% W:${caravan.resources.water}%`,
+          `F:${Math.round(caravan.resources.fuel)}% W:${Math.round(
+            caravan.resources.water
+          )}%`, // Added Math.round()
           {
             fontFamily: "Courier New",
             fontSize: "8px",
@@ -594,7 +597,9 @@ export default class CoordinatorTerminal extends Phaser.Scene {
         this.add.text(
           0,
           y + 63,
-          `Food:${caravan.resources.food}% Med:${caravan.resources.medicine}%`,
+          `Food:${Math.round(caravan.resources.food)}% Med:${Math.round(
+            caravan.resources.medicine
+          )}%`, // Added Math.round()
           {
             fontFamily: "Courier New",
             fontSize: "8px",
