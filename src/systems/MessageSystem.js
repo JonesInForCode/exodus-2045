@@ -140,7 +140,17 @@ export default class MessageSystem {
     });
   }
 
+  canInteract() {
+    const timeController = this.scene.registry.get("timeController");
+    return timeController ? !timeController.isPausedState() : true;
+  }
+
   addMessage(message) {
+    if (!this.canInteract() && message.from !== "System") {
+      console.log("📧 Cannot send message while time is paused");
+      return;
+    }
+
     this.messages.unshift(message); // Add to beginning
 
     // Keep only last 20 messages

@@ -2,7 +2,6 @@
 import DataManager from "../systems/DataManager.js";
 import MessageSystem from "../systems/MessageSystem.js";
 import ResourceManager from "../systems/ResourceManager.js";
-import TimeController from "../systems/TimeController.js";
 import CaravanManager from "../systems/CaravanManager.js";
 import Phaser from "phaser";
 
@@ -20,15 +19,11 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     this.dataManager = null;
     this.messageSystem = null;
     this.resourceManager = null;
-    this.timeController = null;
     this.caravanManager = null;
 
     // UI state
     this.currentMessages = [];
     this.currentCaravans = [];
-    this.timeDisplay = null;
-    this.speedIndicator = null;
-    this.timeControlButtons = [];
   }
 
   preload() {
@@ -54,7 +49,6 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     let createUIError = false;
     try {
       this.createTerminalInterface();
-      this.createTimeDisplay();
       this.createResourcePanel();
       this.createMessagePanel();
       this.createCaravanPanel();
@@ -94,7 +88,7 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     }
 
     // Initialize other systems with data manager
-    this.timeController = new TimeController(this);
+    this.timeController = this.registry.get("timeController");
     this.messageSystem = new MessageSystem(this, this.dataManager);
     this.resourceManager = new ResourceManager(this, this.dataManager);
     this.caravanManager = new CaravanManager(
@@ -188,30 +182,6 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     // Store header height for layout calculations (tabs + terminal header)
     this.headerHeight = tabHeight + headerHeight; // 40 + 60 = 100px
   }
-  createTimeDisplay() {
-    const { width } = this.scale;
-    const tabHeight = 40;
-
-    // Current time display (positioned relative to terminal header)
-    this.timeDisplay = this.add
-      .text(width - 250, tabHeight + 30, "00:00:00", {
-        fontFamily: "Courier New",
-        fontSize: "24px",
-        color: "#f59e0b",
-        fontWeight: "bold",
-      })
-      .setOrigin(1, 0);
-
-    // Add date display to the left of system status text
-    this.dateDisplay = this.add
-      .text(width - 250, tabHeight + 20, "", {
-        fontFamily: "Courier New",
-        fontSize: "12px",
-        color: "#94a3b8",
-      })
-      .setOrigin(1, 0);
-  }
-
   createResourcePanel() {
     const panelX = 20;
     const panelY = this.headerHeight + 20;
@@ -294,36 +264,7 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     // Panel background
     this.add.rectangle(0, panelY, width, panelHeight, 0x334155).setOrigin(0, 0);
 
-    // Time control buttons
-    const timeControls = [
-      { text: "⏸️ PAUSE", speed: 0, x: 50 },
-      { text: "▶️ 1X", speed: 1, x: 150 },
-      { text: "⏩ 2X", speed: 2, x: 230 },
-      { text: "⏩⏩ 4X", speed: 4, x: 310 },
-    ];
-
-    this.timeControlButtons = [];
-
-    timeControls.forEach((control) => {
-      const button = this.createButton(
-        control.x,
-        panelY + 20,
-        control.text,
-        () => {
-          this.setTimeSpeed(control.speed);
-        }
-      );
-      this.timeControlButtons.push({ button, speed: control.speed });
-    });
-
-    // Current speed indicator
-    this.speedIndicator = this.add.text(400, panelY + 30, "Speed: 1X", {
-      fontFamily: "Courier New",
-      fontSize: "14px",
-      color: "#10b981",
-    });
-
-    // System controls
+    // Resource/system control buttons only
     this.createButton(width - 300, panelY + 20, "📦 SUPPLY DROP", () => {
       this.requestSupplyDrop();
     });
@@ -359,40 +300,6 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     button.on("pointerdown", callback);
 
     return button;
-  }
-
-  // Time control methods
-  setTimeSpeed(speed) {
-    this.timeController.setTimeSpeed(speed);
-
-    // Update speed indicator
-    const speedText = speed === 0 ? "PAUSED" : `${speed}X`;
-    this.speedIndicator.setText(`Speed: ${speedText}`);
-
-    // Update button appearance
-    this.timeControlButtons.forEach(({ button, speed: buttonSpeed }) => {
-      if (buttonSpeed === speed) {
-        button.setStyle({ backgroundColor: "#10b981", color: "#0f172a" });
-      } else {
-        button.setStyle({ backgroundColor: "#475569", color: "#e2e8f0" });
-      }
-    });
-  }
-
-  updateTimeDisplay(gameTime) {
-    if (this.timeDisplay && this.timeDisplay.active) {
-      try {
-        this.timeDisplay.setText(this.timeController.formatGameTime());
-        // Update date display if it exists
-        if (this.dateDisplay && this.dateDisplay.active) {
-          this.dateDisplay.setText(this.timeController.formatGameDate());
-        }
-      } catch (error) {
-        console.warn("Time display update failed:", error);
-        // Recreate time display if corrupted
-        this.createTimeDisplay();
-      }
-    }
   }
 
   // Resource management methods

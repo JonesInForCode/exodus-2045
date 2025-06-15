@@ -8,17 +8,153 @@ export default class GameUI extends Phaser.Scene {
     this.tabButtons = [];
     this.tabContainer = null;
     this.notificationContainer = null;
+    this.timeController = null;
+    this.timeDisplay = null;
+    this.speedIndicator = null;
+    this.timeControlButtons = [];
   }
 
   create() {
     this.createTabSystem();
     this.createNotificationSystem();
+    this.createGlobalTimeControls();
     this.setupEventListeners();
 
     // Ensure GameUI always renders on top of other scenes
     this.scene.bringToTop();
 
     console.log("🖥️ GameUI with comprehensive tab system initialized");
+  }
+  createGlobalTimeControls() {
+    const { width } = this.scale;
+
+    // Get the global time controller
+    this.timeController = this.registry.get("timeController");
+    if (!this.timeController) {
+      console.warn("TimeController not found in registry");
+      return;
+    }
+
+    // Time display container (top right, below system status)
+    const timeContainer = this.add.container(width - 20, 55);
+
+    // Current game time
+    this.timeDisplay = this.add
+      .text(0, 0, "00:00:00", {
+        fontFamily: "Courier New",
+        fontSize: "16px",
+        color: "#f59e0b",
+        fontWeight: "bold",
+      })
+      .setOrigin(1, 0);
+
+    // Date display
+    this.dateDisplay = this.add
+      .text(0, -15, "", {
+        fontFamily: "Courier New",
+        fontSize: "10px",
+        color: "#94a3b8",
+      })
+      .setOrigin(1, 0);
+
+    timeContainer.add([this.dateDisplay, this.timeDisplay]);
+
+    // Time controls (bottom of screen, always visible)
+    const controlY = this.scale.height - 30;
+    const controls = [
+      { text: "⏸️", speed: 0, x: 50 },
+      { text: "▶️", speed: 1, x: 90 },
+      { text: "⏩", speed: 2, x: 130 },
+      { text: "⏩⏩", speed: 4, x: 180 },
+    ];
+
+    controls.forEach((control) => {
+      const button = this.createTimeButton(
+        control.x,
+        controlY,
+        control.text,
+        () => {
+          this.setGlobalTimeSpeed(control.speed);
+        }
+      );
+      this.timeControlButtons.push({ button, speed: control.speed });
+    });
+
+    // Speed indicator
+    this.speedIndicator = this.add
+      .text(230, controlY, "Speed: 1X", {
+        fontFamily: "Courier New",
+        fontSize: "12px",
+        color: "#10b981",
+      })
+      .setOrigin(0, 0.5);
+
+    // Register for time updates
+    this.timeController.registerCallback((gameTime, timeSpeed, isPaused) => {
+      this.updateGlobalTimeDisplay();
+    });
+
+    // Initial display
+    this.updateGlobalTimeDisplay();
+  }
+
+  createTimeButton(x, y, text, callback) {
+    const button = this.add
+      .text(x, y, text, {
+        fontFamily: "Courier New",
+        fontSize: "12px",
+        color: "#e2e8f0",
+        backgroundColor: "#475569",
+        padding: { x: 8, y: 4 },
+      })
+      .setInteractive()
+      .setOrigin(0, 0.5);
+
+    button.on("pointerover", () => {
+      button.setStyle({ backgroundColor: "#10b981", color: "#0f172a" });
+    });
+
+    button.on("pointerout", () => {
+      button.setStyle({ backgroundColor: "#475569", color: "#e2e8f0" });
+    });
+
+    button.on("pointerdown", callback);
+    return button;
+  }
+
+  setGlobalTimeSpeed(speed) {
+    if (this.timeController) {
+      this.timeController.setTimeSpeed(speed);
+      this.updateTimeControlAppearance(speed);
+    }
+  }
+
+  updateTimeControlAppearance(currentSpeed) {
+    this.timeControlButtons.forEach(({ button, speed }) => {
+      if (speed === currentSpeed) {
+        button.setStyle({ backgroundColor: "#10b981", color: "#0f172a" });
+      } else {
+        button.setStyle({ backgroundColor: "#475569", color: "#e2e8f0" });
+      }
+    });
+
+    const speedText = currentSpeed === 0 ? "PAUSED" : `${currentSpeed}X`;
+    if (this.speedIndicator) {
+      this.speedIndicator.setText(`Speed: ${speedText}`);
+    }
+  }
+
+  updateGlobalTimeDisplay() {
+    if (this.timeController && this.timeDisplay && this.timeDisplay.active) {
+      try {
+        this.timeDisplay.setText(this.timeController.formatGameTime());
+        if (this.dateDisplay && this.dateDisplay.active) {
+          this.dateDisplay.setText(this.timeController.formatGameDate());
+        }
+      } catch (error) {
+        console.warn("Global time display update failed:", error);
+      }
+    }
   }
 
   createTabSystem() {
@@ -312,6 +448,30 @@ export default class GameUI extends Phaser.Scene {
             // Will activate radio view when enabled
             console.log("📻 Radio shortcut (Phase 2)");
           }
+          break;
+        // In the keyboard handler, add these cases to the existing switch statement:
+        case "Space":
+          event.preventDefault();
+          if (this.timeController) {
+            const currentSpeed = this.timeController.getTimeSpeed();
+            const newSpeed = currentSpeed === 0 ? 1 : 0;
+            this.setGlobalTimeSpeed(newSpeed);
+          }
+          break;
+
+        case "Digit1":
+          event.preventDefault();
+          this.setGlobalTimeSpeed(1);
+          break;
+
+        case "Digit2":
+          event.preventDefault();
+          this.setGlobalTimeSpeed(2);
+          break;
+
+        case "Digit4":
+          event.preventDefault();
+          this.setGlobalTimeSpeed(4);
           break;
       }
     });

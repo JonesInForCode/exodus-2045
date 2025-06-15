@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import TimeController from "../systems/TimeController";
 
 export default class BootScene extends Phaser.Scene {
   constructor() {
@@ -253,6 +254,12 @@ export default class BootScene extends Phaser.Scene {
         avgResponseTime: 0,
       },
     });
+
+    // Initialize global TimeController
+    const timeController = new TimeController(this);
+    timeController.initialize();
+    this.game.registry.set("timeController", timeController);
+    console.log("⏰ Global TimeController initialized");
 
     // Launch GameUI (persistent tab system)
     this.scene.launch("GameUI");
