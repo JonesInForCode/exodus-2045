@@ -585,11 +585,11 @@ export default class RadioView extends Phaser.Scene {
       callback: () => {
         if (this.staticText && this.staticText.active) {
           const staticChars = "░▒▓█▀▄▌▐│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼";
-          let static = "";
+          let staticString = "";
           for (let i = 0; i < 80; i++) {
-            static += staticChars[Math.floor(Math.random() * staticChars.length)];
+            staticString += staticChars[Math.floor(Math.random() * staticChars.length)];
           }
-          this.staticText.setText(static);
+          this.staticText.setText(this.staticString);
           this.staticText.setAlpha(0.1 + Math.random() * 0.1);
         }
       },
