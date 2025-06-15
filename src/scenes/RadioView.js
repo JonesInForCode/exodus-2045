@@ -16,6 +16,7 @@ export default class RadioView extends Phaser.Scene {
     this.statusPanel = null;
     this.logContainer = null;
     this.optionsContainer = null;
+    this.caravanSelectorContainer = null;
   }
 
   create() {
@@ -35,8 +36,10 @@ export default class RadioView extends Phaser.Scene {
     this.createCommunicationLog();
     this.createRadioControls();
 
-    // Load caravan data
-    this.loadCaravanData();
+    // Load caravan data after a short delay to ensure game state is ready
+    this.time.delayedCall(100, () => {
+      this.loadCaravanData();
+    });
 
     // Start radio static effect
     this.startRadioEffects();
@@ -82,102 +85,45 @@ export default class RadioView extends Phaser.Scene {
   }
 
   createCaravanSelector() {
-    const { width } = this.scale;
-    const selectorY = 80;
+    const panelX = 20;
+    const panelY = 120;
+    const panelWidth = 300;
+    const panelHeight = 40;
 
-    // Get all caravans from game state
-    const gameState = this.registry.get("gameState");
-    const caravans = gameState?.caravans || [];
+    // Panel background for selector
+    this.add
+      .rectangle(panelX, panelY - 30, panelWidth, panelHeight, 0x1e293b)
+      .setOrigin(0, 0)
+      .setStrokeStyle(1, 0x334155);
 
-    // Selector container
-    const selectorContainer = this.add.container(20, selectorY);
-
-    // Label
-    selectorContainer.add(
-      this.add.text(0, 0, "SELECT CARAVAN:", {
-        fontFamily: "Courier New",
-        fontSize: "11px",
-        color: "#f59e0b",
-        fontWeight: "bold",
-      })
+    // Selector container - position inside the panel
+    this.caravanSelectorContainer = this.add.container(
+      panelX + 10,
+      panelY - 10
     );
 
-    // Create buttons for each caravan
-    let xOffset = 120;
-    caravans.forEach((caravan, index) => {
-      const button = this.add.container(xOffset, 0);
-
-      const bg = this.add
-        .rectangle(0, 0, 100, 24, 0x475569)
-        .setOrigin(0, 0.5)
-        .setInteractive({ useHandCursor: true });
-
-      const text = this.add
-        .text(50, 0, caravan.id, {
+    // Label
+    this.caravanSelectorContainer.add(
+      this.add
+        .text(0, 0, "SELECT CARAVAN:", {
           fontFamily: "Courier New",
           fontSize: "11px",
-          color: "#e2e8f0",
+          color: "#f59e0b",
+          fontWeight: "bold",
         })
-        .setOrigin(0.5, 0.5);
+        .setOrigin(0, 0.5)
+    );
 
-      button.add([bg, text]);
+    // Placeholder text - will be replaced when caravans load
+    this.caravanLoadingText = this.add
+      .text(120, 0, "Loading...", {
+        fontFamily: "Courier New",
+        fontSize: "11px",
+        color: "#94a3b8",
+      })
+      .setOrigin(0, 0.5);
 
-      // Selection logic
-      bg.on("pointerover", () => {
-        if (this.currentCaravan?.id !== caravan.id) {
-          bg.setFillStyle(0x64748b);
-        }
-      });
-
-      bg.on("pointerout", () => {
-        if (this.currentCaravan?.id !== caravan.id) {
-          bg.setFillStyle(0x475569);
-        }
-      });
-
-      bg.on("pointerdown", () => {
-        this.selectCaravan(caravan);
-        // Update all caravan buttons
-        this.updateCaravanSelectionButtons();
-      });
-
-      // Store reference for updates
-      button.caravanId = caravan.id;
-      button.bg = bg;
-      button.text = text;
-
-      selectorContainer.add(button);
-      xOffset += 110;
-    });
-
-    this.caravanSelectorContainer = selectorContainer;
-  }
-
-  selectCaravan(caravan) {
-    this.currentCaravan = {
-      ...caravan,
-      relationship: caravan.relationship || {
-        loyalty: 75,
-        lastContact: new Date(),
-        mood: "confident",
-        silenceTimer: 0,
-      },
-    };
-
-    this.displayCaravanStatus();
-    this.addLogEntry("SYSTEM", `Connected to ${caravan.id}`, "#10b981");
-  }
-
-  updateCaravanSelectionButtons() {
-    if (!this.caravanSelectorContainer) return;
-
-    this.caravanSelectorContainer.list.forEach((item) => {
-      if (item.caravanId) {
-        const isSelected = this.currentCaravan?.id === item.caravanId;
-        item.bg.setFillStyle(isSelected ? 0x10b981 : 0x475569);
-        item.text.setColor(isSelected ? "#0f172a" : "#e2e8f0");
-      }
-    });
+    this.caravanSelectorContainer.add(this.caravanLoadingText);
   }
 
   createCaravanStatusPanel() {
@@ -279,7 +225,7 @@ export default class RadioView extends Phaser.Scene {
     const bg = this.add
       .rectangle(0, 0, 280, 24, 0x475569)
       .setOrigin(0, 0)
-      .setInteractive({ useHandCursor: true }); // Add hand cursor
+      .setInteractive({ useHandCursor: true });
 
     const label = this.add
       .text(10, 12, text, {
@@ -291,11 +237,11 @@ export default class RadioView extends Phaser.Scene {
 
     container.add([bg, label]);
 
-    // Fix the event handlers
+    // Hover effects
     bg.on("pointerover", () => {
       if (!this.isTransmitting) {
         bg.setFillStyle(0x64748b);
-        label.setColor("#ffffff"); // Make text brighter on hover
+        label.setColor("#ffffff");
       }
     });
 
@@ -400,14 +346,136 @@ export default class RadioView extends Phaser.Scene {
 
   loadCaravanData() {
     const gameState = this.registry.get("gameState");
+    const caravans = this.getCaravansFromDataManager();
 
-    if (gameState && gameState.caravans && gameState.caravans.length > 0) {
-      // For now, just use the first caravan
-      this.selectCaravan(gameState.caravans[0]);
-      if (this.caravanSelectorContainer) {
-        this.updateCaravanSelectionButtons();
+    console.log("Loading caravans:", caravans);
+
+    if (caravans && caravans.length > 0) {
+      // Remove loading text
+      if (this.caravanLoadingText) {
+        this.caravanLoadingText.destroy();
       }
+
+      // Create caravan selection buttons
+      this.createCaravanButtons(caravans);
+
+      // Select first caravan by default
+      this.selectCaravan(caravans[0]);
     }
+  }
+
+  getCaravansFromDataManager() {
+    // Try to get from game state first
+    const gameState = this.registry.get("gameState");
+    if (gameState?.caravans && gameState.caravans.length > 0) {
+      return gameState.caravans;
+    }
+
+    // Fallback to getting from CoordinatorTerminal's dataManager
+    const coordinatorScene = this.scene.get("CoordinatorTerminal");
+    if (coordinatorScene?.dataManager) {
+      return coordinatorScene.dataManager.getAllCaravans();
+    }
+
+    // Last resort - return test data
+    return [
+      {
+        id: "Alpha-7",
+        leader: "Maria Santos",
+        members: 12,
+        status: "moving",
+        location: { current: "Phoenix Outskirts" },
+        resources: { food: 75, water: 60, fuel: 45, medicine: 30, morale: 85 },
+      },
+    ];
+  }
+
+  createCaravanButtons(caravans) {
+    let xOffset = 120;
+
+    caravans.forEach((caravan, index) => {
+      if (xOffset + 100 > 280) return; // Don't overflow panel
+
+      const button = this.add.container(xOffset, 0);
+
+      const bg = this.add
+        .rectangle(0, 0, 80, 20, 0x475569)
+        .setOrigin(0, 0.5)
+        .setInteractive({ useHandCursor: true });
+
+      const text = this.add
+        .text(40, 0, caravan.id, {
+          fontFamily: "Courier New",
+          fontSize: "10px",
+          color: "#e2e8f0",
+        })
+        .setOrigin(0.5, 0.5);
+
+      button.add([bg, text]);
+
+      // Selection logic
+      bg.on("pointerover", () => {
+        if (this.currentCaravan?.id !== caravan.id) {
+          bg.setFillStyle(0x64748b);
+        }
+      });
+
+      bg.on("pointerout", () => {
+        if (this.currentCaravan?.id !== caravan.id) {
+          bg.setFillStyle(0x475569);
+        }
+      });
+
+      bg.on("pointerdown", () => {
+        this.selectCaravan(caravan);
+        this.updateCaravanSelectionButtons();
+      });
+
+      // Store reference for updates
+      button.caravanId = caravan.id;
+      button.bg = bg;
+      button.text = text;
+
+      this.caravanSelectorContainer.add(button);
+      xOffset += 90;
+    });
+  }
+
+  selectCaravan(caravan) {
+    this.currentCaravan = {
+      ...caravan,
+      relationship: caravan.relationship || {
+        loyalty: 75,
+        lastContact: new Date(),
+        mood: "confident",
+        silenceTimer: 0,
+      },
+    };
+
+    // Convert lastContact string to Date object if it exists
+    if (
+      this.currentCaravan.relationship.lastContact &&
+      typeof this.currentCaravan.relationship.lastContact === "string"
+    ) {
+      this.currentCaravan.relationship.lastContact = new Date(
+        this.currentCaravan.relationship.lastContact
+      );
+    }
+
+    this.displayCaravanStatus();
+    this.addLogEntry("SYSTEM", `Connected to ${caravan.id}`, "#10b981");
+  }
+
+  updateCaravanSelectionButtons() {
+    if (!this.caravanSelectorContainer) return;
+
+    this.caravanSelectorContainer.list.forEach((item) => {
+      if (item.caravanId && item.bg && item.text) {
+        const isSelected = this.currentCaravan?.id === item.caravanId;
+        item.bg.setFillStyle(isSelected ? 0x10b981 : 0x475569);
+        item.text.setColor(isSelected ? "#0f172a" : "#e2e8f0");
+      }
+    });
   }
 
   displayCaravanStatus() {
@@ -724,11 +792,26 @@ export default class RadioView extends Phaser.Scene {
   }
 
   getTimeSinceLastContact() {
-    if (!this.currentCaravan.relationship.lastContact) return "Never";
+    if (!this.currentCaravan?.relationship?.lastContact) return "Never";
+
+    let lastContactDate = this.currentCaravan.relationship.lastContact;
+
+    // Convert string to Date if needed
+    if (typeof lastContactDate === "string") {
+      lastContactDate = new Date(lastContactDate);
+    }
+
+    // Check if it's a valid date
+    if (
+      !(lastContactDate instanceof Date) ||
+      isNaN(lastContactDate.getTime())
+    ) {
+      return "Unknown";
+    }
 
     const now = Date.now();
-    const lastContact = this.currentCaravan.relationship.lastContact.getTime();
-    const minutes = Math.floor((now - lastContact) / 60000);
+    const lastContactTime = lastContactDate.getTime();
+    const minutes = Math.floor((now - lastContactTime) / 60000);
 
     if (minutes < 1) return "Just now";
     if (minutes === 1) return "1 minute ago";
@@ -751,7 +834,7 @@ export default class RadioView extends Phaser.Scene {
             staticString +=
               staticChars[Math.floor(Math.random() * staticChars.length)];
           }
-          this.staticText.setText(this.staticString);
+          this.staticText.setText(staticString);
           this.staticText.setAlpha(0.1 + Math.random() * 0.1);
         }
       },

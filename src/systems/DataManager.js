@@ -41,7 +41,10 @@ export default class DataManager {
 
   async loadCaravanData() {
     try {
-      const response = await fetch("./js/data/caravans.json");
+      const response = await fetch("./src/data/caravans.json");
+      if (response.ok) {
+        console.log("📊 Caravan data loaded successfully");
+      }
       const data = await response.json();
       return data.caravans || [];
     } catch (error) {
@@ -52,7 +55,10 @@ export default class DataManager {
 
   async loadRouteData() {
     try {
-      const response = await fetch("./js/data/routes.json");
+      const response = await fetch("./src/data/routes.json");
+      if (response.ok) {
+        console.log("📊 Route data loaded successfully");
+      }
       const data = await response.json();
       return data.routes || [];
     } catch (error) {
@@ -63,7 +69,10 @@ export default class DataManager {
 
   async loadEventData() {
     try {
-      const response = await fetch("./js/data/events.json");
+      const response = await fetch("./src/data/events.json");
+      if (response.ok) {
+        console.log("📊 Event data loaded successfully");
+      }
       const data = await response.json();
       return data.events || [];
     } catch (error) {

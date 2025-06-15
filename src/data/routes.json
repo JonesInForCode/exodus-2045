@@ -1,0 +1,94 @@
+{
+  "routes": [
+    {
+      "id": "phoenix_to_new_seattle",
+      "name": "Phoenix to New Seattle Route",
+      "description": "Primary northern evacuation route through Nevada and Oregon",
+      "distance_km": 1847,
+      "estimated_days": 12,
+      "difficulty": "moderate",
+      "waypoints": [
+        { "name": "Phoenix Outskirts", "lat": 33.4484, "lng": -112.074 },
+        { "name": "Flagstaff Station", "lat": 35.1983, "lng": -111.6513 },
+        { "name": "Las Vegas Ruins", "lat": 36.1699, "lng": -115.1398 },
+        { "name": "Reno Checkpoint", "lat": 39.5296, "lng": -119.8138 },
+        { "name": "Eugene Safe Zone", "lat": 44.0521, "lng": -123.0868 },
+        { "name": "Portland Ruins", "lat": 45.5152, "lng": -122.6784 },
+        { "name": "New Seattle Climate Zone", "lat": 47.6062, "lng": -122.3321 }
+      ],
+      "hazards": ["extreme_heat", "water_scarcity", "dust_storms", "bandit_activity"],
+      "resources": ["fuel_depot_vegas", "water_cache_flagstaff", "medical_reno"]
+    },
+    {
+      "id": "tucson_to_great_lakes",
+      "name": "Tucson to Great Lakes Route",
+      "description": "Eastern route through New Mexico and Colorado to freshwater zones",
+      "distance_km": 2580,
+      "estimated_days": 18,
+      "difficulty": "hard",
+      "waypoints": [
+        { "name": "Tucson Checkpoint", "lat": 32.2226, "lng": -110.9747 },
+        { "name": "Las Cruces", "lat": 32.3199, "lng": -106.7637 },
+        { "name": "Albuquerque Ruins", "lat": 35.0844, "lng": -106.6504 },
+        { "name": "Santa Fe Outpost", "lat": 35.6870, "lng": -105.9378 },
+        { "name": "Denver Fortress", "lat": 39.7392, "lng": -104.9903 },
+        { "name": "Kansas City Ruins", "lat": 39.0997, "lng": -94.5786 },
+        { "name": "Great Lakes Collective", "lat": 41.8781, "lng": -87.6298 }
+      ],
+      "hazards": ["mountain_passes", "extreme_weather", "contaminated_zones", "resource_scarcity"],
+      "resources": ["supply_cache_albuquerque", "fuel_depot_denver", "medical_kansas"]
+    },
+    {
+      "id": "california_coastal",
+      "name": "California Coastal Exodus",
+      "description": "Coastal evacuation route for flooded California cities",
+      "distance_km": 1290,
+      "estimated_days": 9,
+      "difficulty": "moderate",
+      "waypoints": [
+        { "name": "San Diego Evacuation Point", "lat": 32.7157, "lng": -117.1611 },
+        { "name": "Los Angeles Ruins", "lat": 34.0522, "lng": -118.2437 },
+        { "name": "Santa Barbara Checkpoint", "lat": 34.4208, "lng": -119.6982 },
+        { "name": "San Francisco Bay Ruins", "lat": 37.7749, "lng": -122.4194 },
+        { "name": "Sacramento Highland", "lat": 38.5816, "lng": -121.4944 },
+        { "name": "Oregon Border", "lat": 42.0000, "lng": -122.5000 }
+      ],
+      "hazards": ["flooding", "seismic_activity", "coastal_storms", "overcrowding"],
+      "resources": ["naval_supplies_sd", "tech_salvage_sf", "agricultural_sacramento"]
+    },
+    {
+      "id": "mountain_sanctuary",
+      "name": "Rocky Mountain Sanctuary Route",
+      "description": "High altitude route to climate-controlled mountain cities",
+      "distance_km": 890,
+      "estimated_days": 8,
+      "difficulty": "very_hard",
+      "waypoints": [
+        { "name": "Salt Lake City", "lat": 40.7608, "lng": -111.8910 },
+        { "name": "Park City Refuge", "lat": 40.6461, "lng": -111.4980 },
+        { "name": "Jackson Hole", "lat": 43.4799, "lng": -110.7624 },
+        { "name": "Yellowstone Border", "lat": 44.4280, "lng": -110.5885 },
+        { "name": "Mountain Fortress Alpha", "lat": 45.6770, "lng": -111.0429 }
+      ],
+      "hazards": ["altitude_sickness", "extreme_cold", "avalanche_zones", "limited_supplies"],
+      "resources": ["geothermal_power", "mountain_springs", "fortified_shelters"]
+    },
+    {
+      "id": "emergency_southern",
+      "name": "Emergency Southern Corridor",
+      "description": "Last resort route through extreme heat zones",
+      "distance_km": 650,
+      "estimated_days": 6,
+      "difficulty": "extreme",
+      "waypoints": [
+        { "name": "Yuma Desert Cross", "lat": 32.6927, "lng": -114.6277 },
+        { "name": "Gila Bend", "lat": 32.9478, "lng": -112.7168 },
+        { "name": "Phoenix Ruins", "lat": 33.4484, "lng": -112.0740 },
+        { "name": "Globe Mining Town", "lat": 33.3942, "lng": -110.7865 },
+        { "name": "Safford Oasis", "lat": 32.8340, "lng": -109.7076 }
+      ],
+      "hazards": ["lethal_heat", "no_water", "sand_storms", "abandoned_zones"],
+      "resources": ["emergency_cache_only", "underground_shelters"]
+    }
+  ]
+}

@@ -1,0 +1,304 @@
+{
+  "events": [
+    {
+      "id": "dust_storm_01",
+      "type": "weather",
+      "title": "Dust Storm Approaching",
+      "priority": "high",
+      "description": "Massive dust storm detected on radar, visibility will drop to near zero.",
+      "duration_minutes": 240,
+      "effects": {
+        "movement_speed": -50,
+        "fuel_consumption": 20,
+        "morale": -10
+      },
+      "options": [
+        {
+          "text": "Find immediate shelter",
+          "consequences": { "time_lost": 180, "morale": 5, "supplies": -5 }
+        },
+        {
+          "text": "Push through slowly",
+          "consequences": { "fuel": -15, "vehicle_damage": 20, "morale": -15 }
+        },
+        {
+          "text": "Change route to avoid",
+          "consequences": { "distance_added": 50, "fuel": -10, "time_lost": 120 }
+        }
+      ]
+    },
+    {
+      "id": "bandit_encounter_01",
+      "type": "hostile",
+      "title": "Bandit Roadblock Ahead",
+      "priority": "high",
+      "description": "Armed group blocking the road, demanding supplies for passage.",
+      "effects": {
+        "morale": -20,
+        "movement_speed": -100
+      },
+      "options": [
+        {
+          "text": "Pay the toll",
+          "consequences": { "food": -20, "water": -20, "morale": -10 }
+        },
+        {
+          "text": "Find alternate route",
+          "consequences": { "fuel": -15, "distance_added": 30, "time_lost": 90 }
+        },
+        {
+          "text": "Call for drone support",
+          "consequences": { "drone_used": true, "morale": 10 },
+          "requirements": { "active_drones": 1 }
+        }
+      ]
+    },
+    {
+      "id": "mechanical_breakdown_01",
+      "type": "mechanical",
+      "title": "Vehicle Engine Failure",
+      "priority": "medium",
+      "description": "Lead vehicle experiencing engine trouble, requires immediate attention.",
+      "effects": {
+        "movement_speed": -80,
+        "fuel_consumption": 30
+      },
+      "options": [
+        {
+          "text": "Attempt field repairs",
+          "consequences": { "time_lost": 120, "success_chance": 70 }
+        },
+        {
+          "text": "Redistribute passengers",
+          "consequences": { "fuel_consumption": 10, "movement_speed": -20, "morale": -5 }
+        },
+        {
+          "text": "Request supply drop with parts",
+          "consequences": { "supply_drop_used": true, "time_lost": 60 },
+          "requirements": { "available_supply_drops": 1 }
+        }
+      ]
+    },
+    {
+      "id": "medical_emergency_01",
+      "type": "medical",
+      "title": "Medical Emergency",
+      "priority": "high",
+      "description": "Caravan member suffering from severe dehydration and heat exhaustion.",
+      "effects": {
+        "morale": -25,
+        "movement_speed": -50
+      },
+      "options": [
+        {
+          "text": "Use medical supplies",
+          "consequences": { "medicine": -20, "water": -10, "morale": 10 }
+        },
+        {
+          "text": "Request medical team",
+          "consequences": { "medical_team_used": true, "morale": 20 },
+          "requirements": { "medical_teams": 1 }
+        },
+        {
+          "text": "Rush to nearest checkpoint",
+          "consequences": { "fuel": -20, "time_saved": -60, "risk": "high" }
+        }
+      ]
+    },
+    {
+      "id": "supply_cache_found",
+      "type": "opportunity",
+      "title": "Abandoned Supply Cache Located",
+      "priority": "low",
+      "description": "Scouts report finding an intact supply cache from a previous expedition.",
+      "effects": {
+        "morale": 15
+      },
+      "options": [
+        {
+          "text": "Investigate carefully",
+          "consequences": { "time_lost": 60, "food": 25, "water": 20, "medicine": 15 }
+        },
+        {
+          "text": "Quick grab and go",
+          "consequences": { "time_lost": 20, "random_supplies": true, "danger_chance": 30 }
+        },
+        {
+          "text": "Mark location and continue",
+          "consequences": { "intel_gained": true, "morale": -5 }
+        }
+      ]
+    },
+    {
+      "id": "refugee_encounter_01",
+      "type": "social",
+      "title": "Stranded Refugees",
+      "priority": "medium",
+      "description": "Small group of refugees spotted, requesting to join the caravan.",
+      "effects": {
+        "morale": -5
+      },
+      "options": [
+        {
+          "text": "Welcome them aboard",
+          "consequences": { "members": 3, "food": -10, "water": -10, "morale": 20 }
+        },
+        {
+          "text": "Share supplies and directions",
+          "consequences": { "food": -5, "water": -5, "morale": 10 }
+        },
+        {
+          "text": "Radio their location to HQ",
+          "consequences": { "morale": 5, "reputation": 10 }
+        }
+      ]
+    },
+    {
+      "id": "extreme_heat_wave",
+      "type": "weather",
+      "title": "Extreme Heat Warning",
+      "priority": "high",
+      "description": "Temperature exceeding 125°F (52°C), dangerous conditions for travel.",
+      "duration_minutes": 360,
+      "effects": {
+        "water_consumption": 50,
+        "morale": -15,
+        "medicine_consumption": 20
+      },
+      "options": [
+        {
+          "text": "Travel only at night",
+          "consequences": { "time_lost": 240, "water": -20, "morale": 5 }
+        },
+        {
+          "text": "Seek immediate shelter",
+          "consequences": { "time_lost": 360, "water": -30, "morale": 0 }
+        },
+        {
+          "text": "Push through with rationing",
+          "consequences": { "water": -40, "medicine": -20, "morale": -25, "casualties_risk": "medium" }
+        }
+      ]
+    },
+    {
+      "id": "radio_distress_signal",
+      "type": "communication",
+      "title": "Distress Signal Received",
+      "priority": "medium",
+      "description": "Picking up distress signal from unknown caravan 20km away.",
+      "effects": {
+        "morale": -10
+      },
+      "options": [
+        {
+          "text": "Investigate and assist",
+          "consequences": { "fuel": -15, "time_lost": 180, "morale": 25, "reputation": 20 }
+        },
+        {
+          "text": "Relay to nearest caravan",
+          "consequences": { "morale": -5, "reputation": 5 }
+        },
+        {
+          "text": "Mark location and continue",
+          "consequences": { "morale": -15, "reputation": -10 }
+        }
+      ]
+    },
+    {
+      "id": "contaminated_water",
+      "type": "hazard",
+      "title": "Water Source Contaminated",
+      "priority": "high",
+      "description": "Planned water resupply point tests positive for contamination.",
+      "effects": {
+        "morale": -20,
+        "water": 0
+      },
+      "options": [
+        {
+          "text": "Use purification tablets",
+          "consequences": { "medicine": -15, "water": 30, "time_lost": 120 }
+        },
+        {
+          "text": "Find alternative source",
+          "consequences": { "fuel": -20, "time_lost": 180, "water": 40 }
+        },
+        {
+          "text": "Request emergency water drop",
+          "consequences": { "supply_drop_used": true, "water": 50 },
+          "requirements": { "available_supply_drops": 1 }
+        }
+      ]
+    },
+    {
+      "id": "solar_panel_bonus",
+      "type": "opportunity",
+      "title": "Optimal Solar Conditions",
+      "priority": "low",
+      "description": "Perfect conditions for solar charging, all electric systems at peak efficiency.",
+      "duration_minutes": 240,
+      "effects": {
+        "fuel_consumption": -20,
+        "morale": 10
+      },
+      "options": [
+        {
+          "text": "Maximize charging time",
+          "consequences": { "time_lost": 60, "fuel": 15, "morale": 5 }
+        },
+        {
+          "text": "Continue at normal pace",
+          "consequences": { "fuel": 5 }
+        }
+      ]
+    },
+    {
+      "id": "checkpoint_ahead",
+      "type": "navigation",
+      "title": "Government Checkpoint Ahead",
+      "priority": "medium",
+      "description": "Official checkpoint requiring documentation and vehicle inspection.",
+      "effects": {
+        "movement_speed": -100
+      },
+      "options": [
+        {
+          "text": "Proceed through checkpoint",
+          "consequences": { "time_lost": 90, "morale": 5, "supplies_checked": true }
+        },
+        {
+          "text": "Use alternate route",
+          "consequences": { "fuel": -15, "distance_added": 40, "morale": -5 }
+        },
+        {
+          "text": "Wait for shift change",
+          "consequences": { "time_lost": 240, "food": -5, "water": -5 }
+        }
+      ]
+    },
+    {
+      "id": "morale_boost_music",
+      "type": "social",
+      "title": "Morale Event: Music Night",
+      "priority": "low",
+      "description": "Group requesting permission to hold music gathering to boost spirits.",
+      "effects": {
+        "morale": 5
+      },
+      "options": [
+        {
+          "text": "Approve the gathering",
+          "consequences": { "morale": 25, "food": -5, "water": -5, "time_lost": 120 }
+        },
+        {
+          "text": "Quick break only",
+          "consequences": { "morale": 10, "time_lost": 30 }
+        },
+        {
+          "text": "Save it for safe zone",
+          "consequences": { "morale": -5 }
+        }
+      ]
+    }
+  ]
+}

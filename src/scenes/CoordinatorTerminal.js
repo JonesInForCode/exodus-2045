@@ -40,7 +40,6 @@ export default class CoordinatorTerminal extends Phaser.Scene {
   }
 
   async create() {
-    console.log("CoordinatorTerminal: create() start");
     console.log("🖥️ Initializing Coordinator Terminal...");
 
     // Initialize systems
@@ -52,29 +51,36 @@ export default class CoordinatorTerminal extends Phaser.Scene {
     }
 
     // Create UI
-    this.createTerminalInterface();
-    console.log("CoordinatorTerminal: createTerminalInterface finished");
-    this.createTimeDisplay();
-    console.log("CoordinatorTerminal: createTerminalDisplay finished");
-    this.createResourcePanel();
-    console.log("CoordinatorTerminal: createResourcePanel finished");
-    this.createMessagePanel();
-    console.log("CoordinatorTerminal: createMessagePanel finished");
-    this.createCaravanPanel();
-    console.log("CoordinatorTerminal: createCaravanPanel finished");
-    this.createControlPanel();
-    console.log("CoordinatorTerminal: createControlPanel finished");
+    let createUIError = false;
+    try {
+      this.createTerminalInterface();
+      this.createTimeDisplay();
+      this.createResourcePanel();
+      this.createMessagePanel();
+      this.createCaravanPanel();
+      this.createControlPanel();
+    } catch (e) {
+      console.error("CoordinatorTerminal: createUI ERROR", e);
+      createUIError = true;
+    }
 
+    if (createUIError) {
+      this.add
+        .text(400, 300, "UI Initialization Error", {
+          fontFamily: "Courier New",
+          fontSize: "24px",
+          color: "#ff0000",
+        })
+        .setOrigin(0.5, 0.5);
+      return;
+    }
     // Start all systems
     this.startSystems();
-    console.log("CoordinatorTerminal: startSystems finished");
 
     // fade in effect
     this.cameras.main.fadeIn(500, 15, 23, 42);
 
     console.log("🖥️ Coordinator Terminal Online");
-
-    console.log("CoordinatorTerminal: create() end");
   }
 
   async initializeSystems() {
