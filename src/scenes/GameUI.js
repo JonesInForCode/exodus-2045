@@ -52,21 +52,21 @@ export default class GameUI extends Phaser.Scene {
         label: "📊 ANALYTICS",
         scene: "AnalyticsView",
         width: 140,
-        enabled: false, // Phase 2
+        enabled: false, // Phase 1
       },
       {
         key: "comms",
         label: "📻 RADIO",
         scene: "RadioView",
         width: 120,
-        enabled: false, // Phase 2
+        enabled: true, // Phase  1
       },
       {
         key: "details",
         label: "👥 CARAVAN",
         scene: "CaravanDetails",
         width: 140,
-        enabled: false, // Future
+        enabled: false, // Phase 1
       },
     ];
 

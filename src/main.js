@@ -3,6 +3,7 @@ import CoordinatorTerminal from "./scenes/CoordinatorTerminal.js";
 import MapView from "./scenes/MapView.js";
 import GameUI from "./scenes/GameUI.js";
 import BootScene from "./scenes/BootScene.js";
+import RadioView from "./scenes/RadioView.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -10,7 +11,7 @@ const config = {
   height: window.innerHeight,
   parent: "phaser-game",
   backgroundColor: "#0f172a",
-  scene: [BootScene, GameUI, CoordinatorTerminal, MapView],
+  scene: [BootScene, GameUI, CoordinatorTerminal, MapView, RadioView],
   physics: {
     default: "arcade",
     arcade: {

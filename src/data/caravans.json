@@ -21,7 +21,13 @@
       "status": "moving",
       "lastContact": "14:23",
       "specialties": ["medical", "mechanical"],
-      "notes": "Experienced group with medical personnel"
+      "notes": "Experienced group with medical personnel",
+      "relationship": {
+        "loyalty": 75,
+        "lastContact": "2045-06-01T14:23:00",
+        "mood": "confident",
+        "communicationHistory": []
+      }
     },
     {
       "id": "Bravo-3",
